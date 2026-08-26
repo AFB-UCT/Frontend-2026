@@ -31,14 +31,14 @@ npm install
 npm run dev
 ```
 
-## Estado del proyecto
+## Estado del proyecto 
 
 - Sprint actual: Sprint 0 (Kickoff)
 - Última actualización: (fecha)
 
 ## Tablero Kanban
 
-Enlace al tablero: (agregar enlace)
+Enlace al tablero: https://trello.com/b/2782xrqJ/desarrollo-de-frontend
 
 ## Enlace de despliegue
 
