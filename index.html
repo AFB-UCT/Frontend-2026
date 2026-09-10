@@ -3,112 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mejores Viajes - Boceto</title>
-    <link rel="stylesheet" href="style.css">
+    <title>EcoRuta Temuco - Main</title>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style_index.css">
 </head>
 <body>
 
-    <header class="header">
-        <div class="search-bar">
-            <input type="text" placeholder="Buscar...">
-            <button class="search-btn">🔍</button>
-        </div>
-        <nav class="nav-links">
-            <a href="#lugares">Lugares</a>
-            <a href="#tiempo">Tiempo</a>
-            <a href="#mapa">Mapa</a>
-            <a href="#empresa">Info de la empresa</a>
-            <a href="#recomendados">Lugares recomendados</a>
-        </nav>
-    </header>
+    <div class="page-wrapper">
 
-    <main>
-        <section class="hero">
-            <div class="hero-banner">
-                <div class="carousel-btn left">&lt;</div>
-                <div class="carousel-btn right">&gt;</div>
-                <div class="hero-info">información del lugar</div>
+        <header class="site-header">
+            <div class="logo-area">
+                <h2>EcoRuta</h2>
             </div>
 
-            <div class="featured-section">
-                <div class="featured-card">
-                    <h2>"mejores viajes"</h2>
-                    <div class="carousel-box">
-                        <span>&lt;</span>
-                        <span>&gt;</span>
+            <div class="search-container">
+                <input type="text" placeholder="buscar...">
+                <button type="submit">🔍</button>
+            </div>
+
+            <nav class="main-nav">
+                <a href="lugares.html">lugares</a>
+                <a href="tiempo.html">tiempo</a>
+                <a href="mapa.html">mapa</a>
+                <a href="info.html">info de la empresa</a>
+                <a href="recomendados.html">lugares recomendados</a>
+            </nav>
+        </header>
+
+        <main class="content-container">
+            <section class="hero-card">
+                <div class="hero-image-box">
+                    <img src="https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=" alt="Parque Nacional Conguillío">
+                </div>
+                <div class="hero-content">
+                    <span class="badge">Destacado</span>
+                    <h2>EcoRuta Temuco</h2>
+                    <p>conectando rutas al aire libre con emprendedores locales</p>
+                </div>
+            </section>
+
+            <section class="info-card">
+                <h3>sobre ecoruta</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                </p>
+            </section>
+
+            <section class="team-section">
+                <div class="section-title">
+                    <h2>explora</h2>
+                </div>
+                
+                <div class="team-grid">
+                    <article class="info-card">
+                        <div class="hero-image-box">
+                            <img src="https://chileestuyo.cl/wp-content/uploads/2025/06/ConguillioMARTINI-45-266x394.jpg" alt="Parque Nacional Conguillío">
+                        </div>
+                        <h3>lugares</h3>
+                        <p><a href="lugares.html">ver catálogo completo ></a></p>
+                    </article>
+
+                    <article class="info-card">
+                        <div class="hero-image-box">
+                            <img src="https://www.turismovirtual.cl/ix/ix.jpg" alt="Mapa de la Región de La Araucanía">
+                        </div>
+                        <h3>mapa</h3>
+                        <p><a href="mapa.html">ver ubicaciones ></a></p>
+                    </article>
+
+                    <article class="info-card">
+                        <div class="hero-image-box">
+                            <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/7e/ba/3b/laguna-del-parque.jpg?w=300&h=300&s=1" alt="Laguna del Parque Nacional Conguillío">
+                        </div>
+                        <h3>recomendados</h3>
+                        <p><a href="recomendados.html">ver destacados ></a></p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="info-card">
+                <div class="section-title">
+                    <h2>horarios y ubicación</h2>
+                </div>
+                <div class="footer-grid"> 
+                    <div class="footer-col">
+                        <p>resumen de horario general</p>
+                        <p><a href="tiempo.html">ver detalle en "tiempo" ></a></p>
+                    </div>
+                    <div class="footer-col">
+                        <p>mapa general de la zona</p>
+                        <p><a href="mapa.html">ver detalle en "mapa" ></a></p>
                     </div>
                 </div>
-                <div class="company-details">
-                    <div class="info-box">info del lugar</div>
-                    <p>correo</p>
-                    <p>número de teléfono</p>
-                    <p>edificios de la empresa</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="tiempo" class="weather-section">
-            <h2>tiempo</h2>
-            <div class="weather-grid">
-                <div class="weather-day">
-                    <span>Lunes</span>
-                    <div class="weather-box"></div>
-                </div>
-                <div class="weather-day">
-                    <span>Martes</span>
-                    <div class="weather-box"></div>
-                </div>
-                <div class="weather-day">
-                    <span>Miércoles</span>
-                    <div class="weather-box"></div>
-                </div>
-                <div class="weather-day">
-                    <span>Jueves</span>
-                    <div class="weather-box"></div>
-                </div>
-                <div class="weather-day">
-                    <span>Viernes</span>
-                    <div class="weather-box"></div>
-                </div>
-                <div class="weather-day">
-                    <span>Sábado</span>
-                    <div class="weather-box"></div>
-                </div>
-                <div class="weather-day">
-                    <span>Domingo</span>
-                    <div class="weather-box"></div>
-                </div>
-            </div>
-        </section>
+        </main>
 
-        <section id="mapa" class="map-section">
-            <h2>mapa</h2>
-            <div class="map-container">
-                <div class="map-marker" style="top: 30%; left: 20%;"></div>
-                <div class="map-marker" style="top: 60%; left: 80%;"></div>
-                <div class="map-marker" style="top: 15%; left: 60%;"></div>
-            </div>
-        </section>
+<footer class="site-footer">
+    <div class="footer-grid"> 
+        <div class="footer-col">
+            <h4>EcoRuta</h4>
+            <p>Explora el mundo de manera sostenible y consciente.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Contacto Directo</h4>
+            <p>📧 Correo: ecoruta@gmail.com</p>
+            <p>📞 Teléfono: +56920189289</p>
+            <p>🏢 Oficina: Edificio Av. Alemania 569</p>
+        </div>
+        <div class="footer-col">
+            <h4>Enlaces</h4>
+            <p>🔗 <a href="#" target="_blank">Síguenos en LinkTree</a></p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 Kiro. Todos los derechos reservados.</p>
+    </div>
+</footer>
 
-        <section id="recomendados" class="recommended-section">
-            <h2>lugares recomendados</h2>
-            <div class="recommendations-grid">
-                <div class="rec-card"></div>
-                <div class="rec-card"></div>
-                <div class="rec-card"></div>
-            </div>
-        </section>
-
-        <section class="booking-section">
-            <h2>informacion de ruta y reserva</h2>
-            <div class="booking-box"></div>
-        </section>
-    </main>
-
-    <footer id="empresa" class="footer">
-        <p>algunos datos especiales de contacto u otros</p>
-        <p>copyright empresa y diseño de pagina kiro</p>
-    </footer>
-
+    </div>
 </body>
 </html>
