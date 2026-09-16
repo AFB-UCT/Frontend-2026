@@ -1,0 +1,209 @@
+*{
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+main{
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(230, 230, 230);
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+
+header{
+    width: 100%;
+    height: 100px;
+    background-color: rgb(200, 200, 200);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+nav{
+    width: 100%;
+    height: 150px;
+    background-color: rgb(220, 220, 220);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.nav__b{
+    width: 100%;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.navegacion__buscador{
+    width: 80%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+.nav__l{
+    height: 70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+@media (max-width: 768px) {
+    .nav__l{
+        flex-wrap: wrap;
+        height: auto;
+        gap: 10px;
+        padding: 10px 0;
+    }
+}
+nav a{
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    background-color: rgb(200, 200, 200);
+    padding: 15px;
+    border-radius: 10px;
+}
+footer{
+    width: 80%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.copy{
+    display: flex;
+    width: 100%;
+    background-color: rgb(200, 200, 200);
+    justify-content: center;
+    align-items: center;
+}
+
+.banner{
+    background-color: rgb(200, 200, 200);
+    background-image: url("https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=");
+    background-size: cover;
+
+    width: 80%;
+    height: auto; 
+    aspect-ratio: 16 / 9;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin: 0 auto;
+}
+.banner p, h4{
+    font-weight: 300;
+
+}
+.banner-info{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: auto;
+    padding: 15px;
+    background-color: rgba(200, 200, 200, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.descripcion{
+    background-color: rgb(200, 200, 200);
+    width: 80%;
+    height: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.descripcion p{
+    background-color: rgb(210, 210, 210);
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    margin: 10px;
+    font-weight:300;
+}
+.seccion-explora {
+    text-align: center;
+    background-color: rgb(200, 200, 200);
+    width: 80%;
+    height: auto;
+    padding: 20px 1;
+    margin: 10px auto; 
+}
+
+.seccion-explora .tarjetas {
+    background-color: rgb(210, 210, 210);
+    padding: 10px;
+    width: 100%;
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.seccion-explora .tarjeta__item {
+    width: 100%;
+    height: auto;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.seccion-explora .tarjeta__item img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+}
+
+.seccion-explora .tarjeta__item-info{
+    flex: 1; 
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+}
+.redireccion{
+    width: 80%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.redireccion .redireccion-links{
+    text-align: center;
+    background-color: rgb(210,210,210);
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+.redireccion-links .redireccion-tarjeta{
+    background-color: rgb(200,200,200);
+    width: 100%;
+    border-radius: 15px;
+    margin: 10px auto;
+    padding: 20px;
+}
