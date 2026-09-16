@@ -24,11 +24,7 @@ Kiro
 ## Cómo ejecutar el proyecto
 
 ```bash
-# Instalar dependencias
-npm install
-
-# Ejecutar en modo desarrollo
-npm run dev
+Via "Git Hub Pages"
 ```
 
 ## Estado del proyecto 
