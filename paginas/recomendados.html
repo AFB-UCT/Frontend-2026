@@ -3,9 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lugares recomendados</title>
+    <title>EcoRuta - Recomendados</title>
+    
+    <link rel="stylesheet" href="../css/plantilla.css">
+    
+    <link rel="stylesheet" href="../css/style_recomendados.css">
 </head>
 <body>
-    <h1>Lugares recomendados</h1>
+    <main>
+        <header>
+            <h1>EcoRuta</h1>
+        </header>
+        <nav>
+            <div class="nav__b">
+                <input type="search" placeholder="Busca tu proximo viaje..." class="navegacion__buscador">
+            </div>
+            <div class="nav__l">
+                <a href="lugares.html">Lugares</a>
+                <a href="horarios.html">Tiempo/Horarios</a>
+                <a href="mapa.html">Mapa</a>
+                <a href="info.html">Información</a>
+                <a href="recomendados.html">Lugares Recomendados</a>
+            </div>
+        </nav>
+
+        
+        <section class="recomendados__contenedor">
+            <h2 class="recomendados__titulo">Los Favoritos de la Semana</h2>
+            <div class="recomendados__grid">
+                
+                <!-- Tarjeta 1 -->
+                <article class="lugar-card">
+                    <!-- Recuerda poner una imagen real en tu carpeta assets -->
+                    <div class="lugar-card__img-placeholder">IMG</div>
+                    <div class="lugar-card__info">
+                        <h3>Parque Oncol</h3>
+                        <p>Descubre la selva valdiviana con senderos para toda la familia y miradores increíbles.</p>
+                        <button class="btn-ruta">Ver Ruta</button>
+                    </div>
+                </article>
+
+                <!-- Tarjeta 2 -->
+                <article class="lugar-card">
+                    <div class="lugar-card__img-placeholder">IMG</div>
+                    <div class="lugar-card__info">
+                        <h3>Fuerte de Niebla</h3>
+                        <p>Un viaje a la historia colonial con una vista privilegiada del océano Pacífico.</p>
+                        <button class="btn-ruta">Ver Ruta</button>
+                    </div>
+                </article>
+
+                <!-- Tarjeta 3 -->
+                <article class="lugar-card">
+                    <div class="lugar-card__img-placeholder">IMG</div>
+                    <div class="lugar-card__info">
+                        <h3>Jardín Botánico</h3>
+                        <p>Más de 1000 especies de plantas en el corazón de la Universidad Austral.</p>
+                        <button class="btn-ruta">Ver Ruta</button>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+        
+
+        <footer>
+            <h4>Contacto</h4>
+            <p>Correo: ecoruta@gmail.com <br>
+                Numero telefonico: +56920189289 <br>
+                Edificio: Edificio Av. Alemania 569 <br>
+                Redes: <a href="">LinkTree</a>
+            </p>
+            <br>
+        </footer>
+        <div class="copy">
+            <p>&copy; 2026 Kiro. Todos los derechos reservados.</p>
+        </div>
+    </main>
 </body>
 </html>
