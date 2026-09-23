@@ -14,14 +14,14 @@
         </header>
         <nav>
             <div class="nav__b">
-                <input type="search" placeholder="Busca tu proximo viaje..." class="navegacion__buscador">
+                <input type="search" placeholder="Busca tu proximo viaje..." class="navegacion__buscador" aria-label="Buscar tu próximo viaje">
             </div>
             <div class="nav__l">
-                <a href="lugares.html">Lugares</a>
-                <a href="horarios.html">Horarios</a>
-                <a href="mapa.html">Mapa</a>
-                <a href="info.html">Información</a>
-                <a href="#">Lugares Recomendados</a>
+                <a href="lugares.html" aria-label="Ver el catálogo completo de lugares">Lugares</a>
+                <a href="horarios.html" aria-label="Ver los horarios de los servicios">Horarios</a>
+                <a href="mapa.html" aria-label="Ver el mapa de rutas y sucursales">Mapa</a>
+                <a href="info.html" aria-label="Ver información sobre la empresa">Información</a>
+                <a href="#" aria-label="Ver los lugares recomendados">Lugares Recomendados</a>
             </div>
         </nav>
 
@@ -30,36 +30,32 @@
             <h2 class="recomendados__titulo">Los Favoritos de la Semana</h2>
             <div class="recomendados__grid">
                 
-                <!-- Tarjeta 1 -->
-                <article class="lugar-card">
-                    <!-- Recuerda poner una imagen real en tu carpeta assets -->
-                    <div class="lugar-card__img-placeholder">IMG</div>
-                    <div class="lugar-card__info">
-                        <h3>Parque Oncol</h3>
-                        <p>Descubre la selva valdiviana con senderos para toda la familia y miradores increíbles.</p>
-                        <button class="btn-ruta">Ver Ruta</button>
-                    </div>
-                </article>
+        <article class="lugar-card">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCMuNhsMsSUfuZolzSBhDLriOP7q2wEFhtuRrlSse5Aw&s=10" alt="Vista panorámica y senderos del Monumento Natural Cerro Ñielol en Temuco" width="100%" height="auto">
+            <div class="lugar-card__info">
+                <h3>Cerro Ñielol</h3>
+                <p>Área silvestre protegida en pleno radio urbano con senderos de trekking y miradores.</p>
+                <button class="btn-ruta" aria-label="Ver ruta para el Cerro Ñielol">Ver Ruta</button>
+            </div>
+        </article>
 
-                <!-- Tarjeta 2 -->
-                <article class="lugar-card">
-                    <div class="lugar-card__img-placeholder">IMG</div>
-                    <div class="lugar-card__info">
-                        <h3>Fuerte de Niebla</h3>
-                        <p>Un viaje a la historia colonial con una vista privilegiada del océano Pacífico.</p>
-                        <button class="btn-ruta">Ver Ruta</button>
-                    </div>
-                </article>
+        <article class="lugar-card">
+            <img src="https://lenguasyliteraturas.ufro.cl/wp-content/uploads/2014/12/Museo_Nacional_Ferroviario_Pablo_Neruda_de_Temuco_11-scaled.jpg" alt="Locomotoras a vapor y vagones históricos en el Museo Nacional Ferroviario Pablo Neruda" width="100%" height="auto">
+            <div class="lugar-card__info">
+                <h3>Museo Ferroviario</h3>
+                <p>Recorrido imperdible por la historia de los trenes en Chile y antiguas cocheras.</p>
+                <button class="btn-ruta" aria-label="Ver ruta para el Museo Nacional Ferroviario Pablo Neruda">Ver Ruta</button>
+            </div>
+        </article>
 
-                <!-- Tarjeta 3 -->
-                <article class="lugar-card">
-                    <div class="lugar-card__img-placeholder">IMG</div>
-                    <div class="lugar-card__info">
-                        <h3>Jardín Botánico</h3>
-                        <p>Más de 1000 especies de plantas en el corazón de la Universidad Austral.</p>
-                        <button class="btn-ruta">Ver Ruta</button>
-                    </div>
-                </article>
+        <article class="lugar-card">
+            <img src="https://destinotemuco.cl/wp-content/uploads/2024/09/Feria-Pinto-01-1-1024x483.jpg" alt="Puestos tradicionales con frutas, verduras y artesanías en la Feria Pinto" width="100%" height="auto">
+            <div class="lugar-card__info">
+                <h3>Feria Pinto</h3>
+                <p>El mercado tradicional más pintoresco y concurrido que refleja la cultura local de Temuco.</p>
+                <button class="btn-ruta" aria-label="Ver ruta para la Feria Pinto">Ver Ruta</button>
+            </div>
+        </article>
 
             </div>
         </section>
