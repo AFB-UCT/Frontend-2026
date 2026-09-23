@@ -5,121 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRuta Temuco - Main</title>
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style_index.css">
+    <link rel="stylesheet" href="./style_index.css">
 </head>
 <body>
+    <main>
 
-    <div class="page-wrapper">
-
-        <header class="site-header">
-            <div class="logo-area">
-                <h2>EcoRuta</h2>
-            </div>
-
-            <div class="search-container">
-                <input type="text" placeholder="buscar...">
-                <button type="submit">🔍</button>
-            </div>
-
-            <nav class="main-nav">
-                <a href="lugares.html">lugares</a>
-                <a href="tiempo.html">tiempo</a>
-                <a href="mapa.html">mapa</a>
-                <a href="info.html">info de la empresa</a>
-                <a href="recomendados.html">lugares recomendados</a>
-            </nav>
+        <header>
+            <h1><a href="./index.html">EcoRuta</a></h1>
         </header>
-
-        <main class="content-container">
-            <section class="hero-card">
-                <div class="hero-image-box">
-                    <img src="https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=" alt="Parque Nacional Conguillío">
+            <nav>
+                <div class="nav__b">
+                    <input type="search" placeholder="Busca tu proximo viaje..."class="navegacion__buscador" aria-label="Buscar tu próximo viaje">
                 </div>
-                <div class="hero-content">
-                    <span class="badge">Destacado</span>
+                <div class="nav__l">
+                    <a href="paginas/lugares.html" aria-label="Ver el catálogo completo de lugares">Lugares</a>
+                    <a href="paginas/horarios.html" aria-label="Ver los horarios de los servicios">Horarios</a>
+                    <a href="paginas/mapa.html" aria-label="Ver el mapa de rutas y sucursales">Mapa</a>
+                    <a href="paginas/info.html" aria-label="Ver información sobre la empresa">Información</a>
+                    <a href="paginas/recomendados.html" aria-label="Ver los lugares recomendados">Lugares Recomendados</a>
+                </div>
+            </nav>
+
+        <main>
+
+            <section class="banner">
+                <div>
+                    <span class="banner-info">
                     <h2>EcoRuta Temuco</h2>
-                    <p>conectando rutas al aire libre con emprendedores locales</p>
+
+                    <p>Conectando rutas al aire libre con emprendedores locales</p>
+                    </span>
                 </div>
             </section>
 
-            <section class="info-card">
-                <h3>sobre ecoruta</h3>
+            <section class="descripcion">
+                <h3>Sobre ecoruta</h3>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
                 </p>
             </section>
 
-            <section class="team-section">
-                <div class="section-title">
-                    <h2>explora</h2>
-                </div>
-                
-                <div class="team-grid">
-                    <article class="info-card">
-                        <div class="hero-image-box">
-                            <img src="https://chileestuyo.cl/wp-content/uploads/2025/06/ConguillioMARTINI-45-266x394.jpg" alt="Parque Nacional Conguillío">
+            <section class="seccion-explora">
+                <h2>Explora</h2>
+                <div class="tarjetas">
+                    <div class="tarjeta__item">
+                        <img src="assets/imagenes/placeholder_explora.png" alt="Paisaje natural representativo del catálogo de lugares" width="100%" height="100%">
+                        <div class="tarjeta__item-info">
+                                <h4>Ver Catalogo</h4>
+                                <a href="paginas/lugares.html">Ver ></a>
                         </div>
-                        <h3>lugares</h3>
-                        <p><a href="lugares.html">ver catálogo completo ></a></p>
-                    </article>
-
-                    <article class="info-card">
-                        <div class="hero-image-box">
-                            <img src="https://www.turismovirtual.cl/ix/ix.jpg" alt="Mapa de la Región de La Araucanía">
+                    </div>
+                    <div class="tarjeta__item">
+                        <img src="assets/imagenes/placeholder_explora.png" alt="Vista previa del mapa de rutas y sucursales" width="100%" height="100%">
+                        <div class="tarjeta__item-info">
+                                <h4>Mapa</h4>
+                                <a href="paginas/mapa.html">Ver ></a>
                         </div>
-                        <h3>mapa</h3>
-                        <p><a href="mapa.html">ver ubicaciones ></a></p>
-                    </article>
-
-                    <article class="info-card">
-                        <div class="hero-image-box">
-                            <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/7e/ba/3b/laguna-del-parque.jpg?w=300&h=300&s=1" alt="Laguna del Parque Nacional Conguillío">
+                    </div>
+                    <div class="tarjeta__item">
+                        <img src="assets/imagenes/placeholder_explora.png" alt="Vista previa de los lugares recomendados" width="100%" height="100%">
+                        <div class="tarjeta__item-info">
+                                <h4>Recomendados</h4>
+                                <a href="paginas/recomendados.html" aria-label="Ver los lugares recomendados">Ver ></a>
                         </div>
-                        <h3>recomendados</h3>
-                        <p><a href="recomendados.html">ver destacados ></a></p>
-                    </article>
+                    </div>
                 </div>
             </section>
-
-            <section class="info-card">
-                <div class="section-title">
-                    <h2>horarios y ubicación</h2>
-                </div>
-                <div class="footer-grid"> 
-                    <div class="footer-col">
-                        <p>resumen de horario general</p>
-                        <p><a href="tiempo.html">ver detalle en "tiempo" ></a></p>
+            
+            <section class="redireccion">
+                <h2>Horarios y Mapa</h2>
+                <div class="redireccion-links">
+                    <div class="redireccion-tarjeta">
+                        <h3>Horarios</h3>
+                        <a href="paginas/horarios.html" aria-label="Ver detalles en la página de Horarios">Ver detalles ></a>
                     </div>
-                    <div class="footer-col">
-                        <p>mapa general de la zona</p>
-                        <p><a href="mapa.html">ver detalle en "mapa" ></a></p>
+                    <div class="redireccion-tarjeta">
+                        <h3>Mapa</h3>
+                        <a href="paginas/mapa.html" aria-label="Ver detalles en la página de Mapa">Ver detalles ></a>
                     </div>
                 </div>
             </section>
 
         </main>
-
-<footer class="site-footer">
-    <div class="footer-grid"> 
-        <div class="footer-col">
-            <h4>EcoRuta</h4>
-            <p>Explora el mundo de manera sostenible y consciente.</p>
+        <footer>
+            <h4>Contacto</h4>
+            <p>Correo: ecoruta@gmail.com <br>
+                Numero telefonico: +56920189289 <br>
+                Edificio: Edificio Av. Alemania 569 <br>
+                Redes: <a href="">LinkTree</a>
+            </p>
+            <br>
+        </footer>
+        <div class="copy">
+            <p>&copy; 2026 Kiro. Todos los derechos reservados.</p>
         </div>
-        <div class="footer-col">
-            <h4>Contacto Directo</h4>
-            <p>📧 Correo: ecoruta@gmail.com</p>
-            <p>📞 Teléfono: +56920189289</p>
-            <p>🏢 Oficina: Edificio Av. Alemania 569</p>
-        </div>
-        <div class="footer-col">
-            <h4>Enlaces</h4>
-            <p>🔗 <a href="#" target="_blank">Síguenos en LinkTree</a></p>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; 2026 Kiro. Todos los derechos reservados.</p>
-    </div>
-</footer>
-
-    </div>
+    </main>
 </body>
 </html>

@@ -1,0 +1,175 @@
+*{
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+main{
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(230, 230, 230);
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+
+header{
+    width: 100%;
+    height: 100px;
+    background-color: rgb(200, 200, 200);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+header a{
+    text-decoration: none;
+    color: black;
+}
+
+nav{
+    width: 100%;
+    height: auto;
+    background-color: rgb(220, 220, 220);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.nav__b{
+    width: 100%;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.navegacion__buscador{
+    width: 80%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+.nav__l{
+    height: 70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+@media (max-width: 768px) {
+    .nav__l{
+        flex-wrap: wrap;
+        height: auto;
+        gap: 10px;
+        padding: 10px 0;
+    }
+}
+nav a{
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    background-color: rgb(200, 200, 200);
+    padding: 15px;
+    border-radius: 10px;
+}
+footer{
+
+    width: 80%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.copy{
+    display: flex;
+    width: 100%;
+    background-color: rgb(200, 200, 200);
+    justify-content: center;
+    align-items: center;
+}
+
+.recomendados__contenedor {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.recomendados__titulo {
+    font-size: 2rem;
+    color: #333;
+    text-align: center;
+}
+
+.recomendados__grid {
+    display: grid;
+    /* Esto hace que las tarjetas bajen solas en pantallas pequeñas */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    width: 100%;
+}
+
+.lugar-card {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.lugar-card:hover {
+    transform: translateY(-5px);
+}
+
+.lugar-card__img-placeholder {
+    width: 100%;
+    height: 180px;
+    background-color: #b0c4de;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.lugar-card__info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.lugar-card__info h3 {
+    margin: 0;
+    color: #222;
+}
+
+.lugar-card__info p {
+    margin: 0;
+    color: #555;
+    line-height: 1.5;
+}
+
+.btn-ruta {
+    padding: 10px;
+    background-color: rgb(200, 200, 200);
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-ruta:hover {
+    background-color: rgb(170, 170, 170);
+}
