@@ -73,7 +73,7 @@ nav{
 }
 nav a{
     text-decoration: none;
-    color: rgb(0, 0, 0);
+    color: #000000;
     background-color: #E1ECE7;
     padding: 15px;
     border-radius: 10px;
