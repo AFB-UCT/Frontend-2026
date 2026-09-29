@@ -10,7 +10,7 @@ main{
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: rgb(230, 230, 230);
+    background-color: #E1ECE7;
     justify-content: center;
     align-items: center;
     gap: 50px;
@@ -19,7 +19,7 @@ main{
 header{
     width: 100%;
     height: 100px;
-    background-color: rgb(200, 200, 200);
+    background-color: #385361;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -27,13 +27,13 @@ header{
 }
 header a{
     text-decoration: none;
-    color: black;
+    color: #E1ECE7;
 }
 
 nav{
     width: 100%;
     height: auto;
-    background-color: rgb(220, 220, 220);
+    background-color: #ABC2CF;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -53,6 +53,7 @@ nav{
     align-items: center;
     justify-content: center;
     border-radius: 10px;
+    background-color: #E1ECE7;
 }
 .nav__l{
     height: 70px;
@@ -73,8 +74,8 @@ nav{
 }
 nav a{
     text-decoration: none;
-    color: rgb(0, 0, 0);
-    background-color: rgb(200, 200, 200);
+    color: #1A2A23;
+    background-color: #7CA1B4;
     padding: 15px;
     border-radius: 10px;
 }
@@ -88,7 +89,7 @@ nav a{
 }
 
 .cartas{
-    background-color: rgb(219, 219, 219);    
+    background-color: transparent;    
     width: 80%;
     height: auto;
     display: flex;
@@ -109,7 +110,7 @@ nav a{
 }
 .tarjeta_lugar{
     height: auto;
-    background-color: rgb(191, 191, 191);
+    background-color: #7CA1B4cc;
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -121,7 +122,7 @@ nav a{
     gap: 10px;
 }
 .tarjeta_lugar img{
-    background-color: rgb(228, 228, 228);
+    background-color: #E1ECE7;
     border-radius: 20px;
     height: 50%;
     width: 50px;
@@ -130,20 +131,30 @@ nav a{
 .tarjeta_lugar a{
     padding: 10px;
     margin: 19px;
-    background-color: rgb(216, 216, 216);
+    background-color: #385361;
+    color: #E1ECE7;
     border-radius: 10px;
     text-decoration: none;
     font-weight: 700;
 }
 .tarjeta_lugar p{
-    font-weight: 100;
+    font-weight: 600;
+    font-size: 1.05rem;
     font-style: italic;
     margin: 10px;
+    background-color: #C6DCED;
+    color: #1A2A23;
+    padding: 8px 14px;
+    border-radius: 8px;
 }
 .tarjeta_lugar h3{
-    font-weight: 400;
-    font-size: larger;
+    font-weight: 600;
+    font-size: 1.15rem;
     margin: 10px;
+    background-color: #C6DCED;
+    color: #1A2A23;
+    padding: 8px 14px;
+    border-radius: 8px; 
 }
 footer{
     width: 80%;
@@ -157,7 +168,8 @@ footer{
 .copy{
     display: flex;
     width: 100%;
-    background-color: rgb(200, 200, 200);
+    background-color: #385361;
+    color:#E1ECE7;
     justify-content: center;
     align-items: center;
 }
