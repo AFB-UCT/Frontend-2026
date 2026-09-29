@@ -9,17 +9,16 @@ main{
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: rgb(230, 230, 230);
+    background-color:#E1ECE7;
     justify-content: center;
     align-items: center;
     gap: 50px;
 }
 
-
 header{
     width: 100%;
     height: 100px;
-    background-color: rgb(200, 200, 200);
+    background-color: #7CA1B4;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -28,12 +27,12 @@ header{
 
 header a{
     text-decoration: none;
-    color: black;
+    color: #1A2A23;
 }
 nav{
     width: 100%;
     height: auto;
-    background-color: rgb(220, 220, 220);
+    background-color: #7CA1B4;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -74,32 +73,33 @@ nav{
 nav a{
     text-decoration: none;
     color: rgb(0, 0, 0);
-    background-color: rgb(200, 200, 200);
+    background-color:#E1ECE7;
     padding: 15px;
     border-radius: 10px;
 }
-footer{
+footer {
     width: 80%;
     height: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    color: #1A2A23;
+    text-align: center;
 }
 
-.copy{
+.copy {
     display: flex;
     width: 100%;
-    background-color: rgb(200, 200, 200);
+    background-color: #385361;
     justify-content: center;
     align-items: center;
+    color: #E1ECE7;
 }
 
 .banner{
-    background-color: rgb(200, 200, 200);
     background-image: url("https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=");
     background-size: cover;
-
     width: 80%;
     height: auto; 
     aspect-ratio: 16 / 9;
@@ -108,8 +108,9 @@ footer{
     position: relative;
     margin: 0 auto;
 }
-.banner p, h4{
-    font-weight: 300;
+.banner p, .banner h4{
+    font-weight: 600;
+    color: #E1ECE7;
 
 }
 .banner-info{
@@ -118,7 +119,7 @@ footer{
     right: 0;
     width: auto;
     padding: 15px;
-    background-color: rgba(200, 200, 200, 0.9);
+    background-color: #7CA1B4cc;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -127,7 +128,7 @@ footer{
 }
 
 .descripcion{
-    background-color: rgb(200, 200, 200);
+    background-color: #7CA1B4;
     width: 80%;
     height: auto;
     padding: 20px;
@@ -136,7 +137,7 @@ footer{
     align-items: center;
 }
 .descripcion p{
-    background-color: rgb(210, 210, 210);
+    background-color: #ABC2CF;
     width: 100%;
     height: auto;
     padding: 20px;
@@ -145,15 +146,15 @@ footer{
 }
 .seccion-explora {
     text-align: center;
-    background-color: rgb(200, 200, 200);
+    background-color: #7CA1B4;
     width: 80%;
     height: auto;
-    padding: 20px 1;
+    padding: 20px 5px;
     margin: 10px auto; 
 }
 
 .seccion-explora .tarjetas {
-    background-color: rgb(210, 210, 210);
+    background-color: #ABC2CF;
     padding: 10px;
     width: 100%;
     margin: 20px auto;
@@ -196,7 +197,8 @@ footer{
 }
 .redireccion .redireccion-links{
     text-align: center;
-    background-color: rgb(210,210,210);
+    color: #385361;
+    background-color: #7CA1B4;
     width: 100%;
     height: auto;
     padding: 20px;
@@ -205,7 +207,7 @@ footer{
     gap: 15px;
 }
 .redireccion-links .redireccion-tarjeta{
-    background-color: rgb(200,200,200);
+    background-color: #ABC2CF;
     width: 100%;
     border-radius: 15px;
     margin: 10px auto;
