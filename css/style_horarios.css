@@ -9,7 +9,7 @@ main{
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: rgb(230, 230, 230);
+    background-color: #E1ECE7;
     justify-content: center;
     align-items: center;
     gap: 50px;
@@ -19,7 +19,7 @@ main{
 header{
     width: 100%;
     height: 100px;
-    background-color: rgb(200, 200, 200);
+    background-color: #7CA1B4;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -27,13 +27,13 @@ header{
 }
 header a{
     text-decoration: none;
-    color: black;
+    color: #1A2A23;
 }
 
 nav{
     width: 100%;
     height: auto;
-    background-color: rgb(220, 220, 220);
+    background-color: #7CA1B4;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -73,8 +73,8 @@ nav{
 }
 nav a{
     text-decoration: none;
-    color: rgb(0, 0, 0);
-    background-color: rgb(200, 200, 200);
+    color: #000000;
+    background-color: #E1ECE7;
     padding: 15px;
     border-radius: 10px;
 }
@@ -90,14 +90,14 @@ footer{
 .copy{
     display: flex;
     width: 100%;
-    background-color: rgb(200, 200, 200);
+    background-color: #385361;
     justify-content: center;
     align-items: center;
 }
 
 .seleccion__lugar{
     width: 60%;
-    background-color: rgb(220, 220, 220);
+    background-color: #7CA1B4;
     padding: 20px;
     border-radius: 10%;
     display: flex;
@@ -106,7 +106,7 @@ footer{
     justify-content: center;
 }
 .horario__semanal {
-    background-color: rgb(200, 200, 200);
+    background-color: #7CA1B4;
     width: 80%;
     height: 400px;
     margin: 10px;
@@ -124,7 +124,7 @@ footer{
 }
 
 .horario__semanal table {
-    background-color: rgb(180, 180, 180);
+    background-color: #ABC2CF;
     width: 100%;
     min-width: 500px;
     height: 300px;
@@ -135,7 +135,7 @@ footer{
 
 .horario__semanal th,
 .horario__semanal td {
-    background-color: rgb(210, 210, 210);
+    background-color: #E1ECE7;
     width: 12.5%;
     padding: 6px 2px;
     text-align: center;
@@ -143,7 +143,7 @@ footer{
 }
 
 .horario__semanal th {
-    background-color: rgb(200, 200, 200);
+    background-color: #385361;
 }
 
 .tabla-contenedor-horario {
@@ -153,7 +153,7 @@ footer{
 }
 
 .horario__especial {
-    background-color: rgb(220, 220, 220);
+    background-color: #7CA1B4;
     width: 80%;
     margin: 10px;
     padding: 15px 10px;
@@ -174,7 +174,7 @@ footer{
 }
 
 .horario__especial li {
-    background-color: rgb(200, 200, 200);
+    background-color: #ABC2CF;
     display: flex;
     align-items: center;
     padding: 15px 10px;
