@@ -91,6 +91,7 @@ footer{
     display: flex;
     width: 100%;
     background-color: #385361;
+    color: #ffffff;
     justify-content: center;
     align-items: center;
 }
@@ -133,17 +134,20 @@ footer{
     box-sizing: border-box;
 }
 
-.horario__semanal th,
+.horario__semanal th{
+    background-color: #385361;
+    color: #ffffff;
+    padding: 6px 2px;
+    text-align: center;
+    font-size: 12px;
+}
+
 .horario__semanal td {
     background-color: #E1ECE7;
     width: 12.5%;
     padding: 6px 2px;
     text-align: center;
     font-size: 12px;
-}
-
-.horario__semanal th {
-    background-color: #385361;
 }
 
 .tabla-contenedor-horario {
