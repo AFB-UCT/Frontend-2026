@@ -10,7 +10,7 @@ main{
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: rgb(230, 230, 230);
+    background-color: #E1ECE7;
     justify-content: center;
     align-items: center;
     gap: 50px;
@@ -20,7 +20,7 @@ main{
 header{
     width: 100%;
     height: 100px;
-    background-color: rgb(200, 200, 200);
+    background-color: #7CA1B4;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -28,13 +28,13 @@ header{
 }
 header a{
     text-decoration: none;
-    color: black;
+    color: #1A2A23;
 }
 
 nav{
     width: 100%;
     height: auto;
-    background-color: rgb(220, 220, 220);
+    background-color: #7CA1B4;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -74,8 +74,8 @@ nav{
 }
 nav a{
     text-decoration: none;
-    color: rgb(0, 0, 0);
-    background-color: rgb(200, 200, 200);
+    color: #000000;
+    background-color: #E1ECE7;
     padding: 15px;
     border-radius: 10px;
 }
@@ -105,8 +105,8 @@ nav a{
     text-decoration: none;
     max-width: 300px;
     min-width: 100px;
-    color: rgb(0, 0, 0);
-    background-color: rgb(200, 200, 200);
+    color: #000000;
+    background-color: #7CA1B4;
     padding: 15px;
     border-radius: 10px;
     justify-content: center;
@@ -127,7 +127,7 @@ nav a{
     object-fit: cover;
 }
 .tarjeta{
-    background-color: rgb(220, 220, 220);
+    background-color: #ABC2CF;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -137,8 +137,8 @@ nav a{
     display: inline-block;
     margin-top: 10px;
     padding: 10px 15px;
-    background-color: rgb(190, 190, 190);
-    color: white;
+    background-color: #385361;
+    color: #E1ECE7;
     border-radius: 5px;
     font-size: 15px;
 }
@@ -155,8 +155,8 @@ nav a{
 .boton__pagina{
     display: inline-block;
     padding: 5px 5px;
-    background-color: rgb(190, 190, 190);
-    color: white;
+    background-color: #385361;
+    color: #E1ECE7;
     border-radius: 5px;
     font-size: 15px;
 
@@ -175,7 +175,7 @@ footer{
 .copy{
     display: flex;
     width: 100%;
-    background-color: rgb(200, 200, 200);
+    background-color: #385361;
     justify-content: center;
     align-items: center;
 }
