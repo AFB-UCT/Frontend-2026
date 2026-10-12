@@ -1,16 +1,20 @@
 # Nombre del Proyecto | Estudio
   EcoRuta Temuco | Kiro™ 2026
 
-## Integrantes y roles (Sprint actual (1))
-   -------------------
-  | Nombre | Rol ágil |
-   -------------------
-  | Martina Iturrieta | Dev
-  | Agustín Flores    | Scrum Master
-  | Vicente Barrientos| Product Owner
-  | Alejandro Mansilla| QA Tester
-  | Benjamín Cornejo  | ???
-   -------------------
+## Integrantes y roles (Sprint actual [2])
+
+  |  **Nombre** |   *Rol ágil*   |
+
+  | **Martina Iturrieta** |   *Dev*
+  
+  | **Agustín Flores**    | *Scrum Master*
+  
+  | **Vicente Barrientos** | *Product Owner*
+  
+  | **Alejandro Mansilla** | *QA Tester*
+  
+  | **Benjamín Cornejo**  | *???*
+
  
 ## Descripción breve
 
@@ -33,7 +37,7 @@
 
 ## Estado del proyecto 
 
-  - Sprint actual: Sprint 2 (Kickoff)
+  - Sprint actual: Sprint 2
   - Última actualización: 6 oct
 
 ## Tablero Kanban
