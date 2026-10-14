@@ -9,7 +9,7 @@ main{
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: rgb(230, 230, 230);
+    background-color: #E1ECE7;
     justify-content: center;
     align-items: center;
     gap: 50px;
@@ -19,7 +19,7 @@ main{
 header{
     width: 100%;
     height: 100px;
-    background-color: rgb(200, 200, 200);
+    background-color: #7CA1B4;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -27,13 +27,13 @@ header{
 }
 header a{
     text-decoration: none;
-    color: black;
+    color: #1A2A23;
 }
 
 nav{
     width: 100%;
     height: auto;
-    background-color: rgb(220, 220, 220);
+    background-color: #7CA1B4;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -73,8 +73,8 @@ nav{
 }
 nav a{
     text-decoration: none;
-    color: rgb(0, 0, 0);
-    background-color: rgb(200, 200, 200);
+    color: #000000;
+    background-color: #E1ECE7;
     padding: 15px;
     border-radius: 10px;
 }
@@ -91,7 +91,8 @@ footer{
 .copy{
     display: flex;
     width: 100%;
-    background-color: rgb(200, 200, 200);
+    background-color: #385361;
+    color: #E1ECE7;
     justify-content: center;
     align-items: center;
 }
@@ -106,7 +107,7 @@ footer{
 
 .recomendados__titulo {
     font-size: 2rem;
-    color: #333;
+    color: #1A2A23;
     text-align: center;
 }
 
@@ -119,7 +120,7 @@ footer{
 }
 
 .lugar-card {
-    background-color: #fff;
+    background-color: #ABC2CF;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -133,11 +134,11 @@ footer{
 .lugar-card__img-placeholder {
     width: 100%;
     height: 180px;
-    background-color: #b0c4de;
+    background-color: #7CA1B4cc;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
+    color: #1A2A23;
     font-weight: bold;
     font-size: 1.5rem;
 }
@@ -151,18 +152,19 @@ footer{
 
 .lugar-card__info h3 {
     margin: 0;
-    color: #222;
+    color: #1A2A23;
 }
 
 .lugar-card__info p {
     margin: 0;
-    color: #555;
+    color: #1A2A23;
     line-height: 1.5;
 }
 
 .btn-ruta {
     padding: 10px;
-    background-color: rgb(200, 200, 200);
+    background-color: #385361;
+    color: #E1ECE7;
     border: none;
     border-radius: 8px;
     font-weight: bold;
@@ -171,5 +173,5 @@ footer{
 }
 
 .btn-ruta:hover {
-    background-color: rgb(170, 170, 170);
+    background-color: #1A2A23;
 }
