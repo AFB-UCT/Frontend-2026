@@ -244,3 +244,31 @@ footer{
 .formulario-contacto__btn:hover {
     background-color: #1A2A23;
 }
+
+/* Estilos para el JS */
+
+.error {
+  border: 2px solid #c0392b;
+}
+
+.exito {
+  border: 2px solid #2e7d4f;
+}
+
+.aviso-error {
+  display: block;
+  margin-top: 4px;
+  font-weight: 600;
+  color: #7a1010;
+}
+
+.aviso-exito {
+  display: block;
+  margin-top: 4px;
+  font-weight: 600;
+  color: #14532d;
+}
+
+.formulario-contacto__btn.enviado {
+  background-color: #2e7d4f;
+}

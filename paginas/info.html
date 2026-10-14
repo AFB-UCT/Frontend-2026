@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRuta</title>
     <link rel="stylesheet" href="../css/style_info.css">
+    <script src="../js/formulario.js" defer></script>
 </head>
 <body>
     <main>
@@ -72,22 +73,22 @@
 
         <section class="formulario-contacto">
             <h2>Contáctanos</h2>
-            <form action="#" method="post" class="formulario-contacto__form">
+            <form action="#" method="post" class="formulario-contacto__form" novalidate>
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre" required>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre">
                 </div>
                 <div class="form-group">
                     <label for="correo">Correo</label>
-                    <input type="email" id="correo" name="correo" placeholder="Ingresa tu correo" required>
+                    <input type="email" id="correo" name="correo" placeholder="Ingresa tu correo">
                 </div>
                 <div class="form-group">
                     <label for="numero">Número</label>
-                    <input type="tel" id="numero" name="numero" placeholder="Ingresa tu número telefónico" required>
+                    <input type="tel" id="numero" name="numero" placeholder="Ingresa tu número telefónico">
                 </div>
                 <div class="form-group">
                     <label for="mensaje">Mensaje</label>
-                    <textarea id="mensaje" name="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                    <textarea id="mensaje" name="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..."></textarea>
                 </div>
                 <button type="submit" class="formulario-contacto__btn">Enviar Mensaje</button>
             </form>
