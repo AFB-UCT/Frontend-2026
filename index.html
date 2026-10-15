@@ -28,14 +28,28 @@
 
         <main>
 
-            <section class="banner">
-                <div>
-                    <span class="banner-info">
-                    <h2>EcoRuta Temuco</h2>
+            <section class="banner" id="banner">
+                <button class=""banner-flecha banner-flecha--anterior"
+                        id="anterior"
+                        aria-label="Mostrar la imagen anterior">
+                   &#10094;
+                </button>
 
-                    <p>Conectando rutas al aire libre con emprendedores locales</p>
-                    </span>
+                <div class="banner-info">
+                    <h2 id="banner-titulo">EcoRuta Temuco</h2>
+                    <p id=""banner-descripcion">
+                        Conectando rutas al aire libre con emprenmdedores locales
+                    </p>
                 </div>
+
+                <button class="baner-flecha banner-flecha--siguiente"
+                        id="siguiente"
+                        aria-label="Mostrar la siguiente imagen">
+                    &#10095;
+                </button>
+            </section>>
+                
+      
             </section>
 
             <section class="descripcion">
@@ -99,6 +113,8 @@
         <div class="copy">
             <p>&copy; 2026 Kiro. Todos los derechos reservados.</p>
         </div>
+
+        <script src="js/banner.js"></script>
     </main>
 </body>
 </html>
