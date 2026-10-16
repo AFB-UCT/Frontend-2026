@@ -98,21 +98,28 @@ footer {
 }
 
 .banner{
-    background-image: url("https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=");
-    background-size: cover;
     width: 80%;
-    height: auto; 
+    height: auto;
     aspect-ratio: 16 / 9;
-    background-size: cover;
-    background-position: center;
     position: relative;
     margin: 0 auto;
+    overflow: hidden;
+    background-color: #7CA1B4cc;
 }
+
+.banner-fondo{
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.5s ease;
+}
+
 .banner p, .banner h4{
     font-weight: 600;
     color: #E1ECE7;
-
 }
+
 .banner-info{
     position: absolute;
     bottom: 0;
@@ -125,6 +132,13 @@ footer {
     justify-content: center;
     align-items: center;
     text-align: center;
+    z-index: 1;
+    transition: opacity 0.5s ease;
+}
+
+.banner--cambiando .banner-fondo,
+.banner--cambiando .banner-info{
+    opacity: 0;
 }
 
 .descripcion{
@@ -223,7 +237,7 @@ footer {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 1;
+    z-index: 2;
     border: none;
     border-radius: 50%;
     padding: 12px 16px;
@@ -231,16 +245,51 @@ footer {
     color: #1A2A23;
     font-size: 1.2rem;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 
-bannner-flecha:hover {
+.banner-flecha:hover,
+.banner-flecha:focus-visible {
     background-color: #E1ECE7;
 }
 
-baner-flecha-anterior { 
+.banner-flecha--anterior {
     left: 16px;
 }
 
-baner-flecha-siguiente {
+.banner-flecha--siguiente {
     right: 16px;
+}
+
+.banner-puntos {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+}
+
+.banner-punto {
+    width: 12px;
+    height: 12px;
+    border: none;
+    border-radius: 50%;
+    background-color: #E1ECE7cc;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.banner-punto.activo {
+    background-color: #385361;
+    transform: scale(1.3);
+}
+
+@media (max-width: 768px) {
+    .banner-flecha {
+        padding: 8px 12px;
+        font-size: 1rem;
+    }
 }
