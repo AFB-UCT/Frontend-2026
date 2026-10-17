@@ -71,7 +71,7 @@ nav{
     
 }
 
-@media (max-width: 1080px) {
+@media (max-width: 2000px) {
     .nav__l{
         flex-wrap: wrap;
         height: auto;
@@ -136,8 +136,7 @@ footer {
     inset: 0;
     background-size: cover;
     background-position: center;
-    position: relative;
-    margin: 0 auto;
+    transition: opacity 0.5s ease;
 }
 .banner p, .banner h4{
     font-weight: 600;
@@ -379,9 +378,9 @@ footer {
 
 }
 
-@media (min-width: 1500px) {
+@media (min-width: 1900px) {
     html { 
-        font-size: 40px; 
+        font-size: 30px; 
     }
 
     .seccion-explora{
@@ -405,7 +404,7 @@ footer {
     }
     .nav__l a{
         margin: 10px;
-        width: 350px;
+        width: 390px;
         padding: 20px;
         font-size: 1.5rem;
     }
@@ -433,7 +432,7 @@ footer {
     }
 }
 
-@media (min-width: 1400px) {
+@media (min-width: 1920px) {
     html { 
         font-size: 30px; 
     }
