@@ -27,14 +27,29 @@
 
         <main>
 
-            <section class="banner">
-                <div>
-                    <span class="banner-info">
-                    <h2>EcoRuta Temuco</h2>
+            <section class="banner" id="banner" tabindex="0" aria-roledescription="carrusel" aria-label="Imágenes destacadas de EcoRuta">
+                <div class="banner-fondo" id="banner-fondo"></div>
 
-                    <p>Conectando rutas al aire libre con emprendedores locales</p>
-                    </span>
+                <button class="banner-flecha banner-flecha--anterior"
+                        id="anterior"
+                        aria-label="Mostrar la imagen anterior">
+                    &#10094;
+                </button>
+
+                <div class="banner-info" aria-live="polite">
+                    <h2 id="banner-titulo">EcoRuta Temuco</h2>
+                    <p id="banner-descripcion">
+                        Conectando rutas al aire libre con emprendedores locales
+                    </p>
                 </div>
+
+                <button class="banner-flecha banner-flecha--siguiente"
+                        id="siguiente"
+                        aria-label="Mostrar la siguiente imagen">
+                    &#10095;
+                </button>
+
+                <div class="banner-puntos" id="banner-puntos"></div>
             </section>
 
             <section class="descripcion">
@@ -102,6 +117,8 @@
         <div class="copy">
             <p>&copy; 2026 EcoRuta. Todos los derechos reservados.</p>
         </div>
+
+        <script src="js/banner.js"></script>
     </main>
 </body>
 </html>
