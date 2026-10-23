@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoRuta</title>
     <link rel="stylesheet" href="../css/style_lugares.css">
+    <script src="../js/catalogo.js" defer></script>
 </head>
 <body>
     <main>
@@ -36,75 +37,9 @@
                 </div>
         </section>
 
-        <section class="grid__lugares">
+        <div id="catalogo-estado" class="catalogo-estado" role="status" aria-live="polite" hidden></div>
 
-                <div class="tarjeta">
-                    <div class="tarjeta__img">
-                        <img src="https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=" alt="Vista panorámica del paisaje natural para el Lugar 1" width="100%" height="100%">
-                    </div>
-                    <div class="tarjeta__texto">
-                        <h3>Lugar 1</h3>
-                        <p>Categoria - distancia - $$</p>
-                        <a href="" class="boton__vermas" aria-label="Ver más detalles sobre el Lugar 1">Ver mas</a>
-                    </div>
-
-                </div>
-
-                <div class="tarjeta">
-                    <div class="tarjeta__img">
-                        <img src="https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=" alt="Vista panorámica del paisaje natural para el Lugar 2" width="100%" height="100%">
-                    </div>
-                    <div class="tarjeta__texto">
-                        <h3>Lugar 2</h3>
-                        <p>Categoria - distancia - $$</p>
-                        <a href="" class="boton__vermas" aria-label="Ver más detalles sobre el Lugar 2">Ver mas</a>
-                    </div>
-                </div>
-
-                <div class="tarjeta">
-                    <div class="tarjeta__img">
-                        <img src="https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=" alt="Vista panorámica del paisaje natural para el Lugar 3" width="100%" height="100%">
-                    </div>
-                    <div class="tarjeta__texto">
-                        <h3>Lugar 3</h3>
-                        <p>Categoria - distancia - $$</p>
-                        <a href="" class="boton__vermas" aria-label="Ver más detalles sobre el Lugar 3">Ver mas</a>
-                    </div>
-                </div>
-
-                <div class="tarjeta">
-                    <div class="tarjeta__img">
-                        <img src="https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=" alt="Vista panorámica del paisaje natural para el Lugar 4" width="100%" height="100%">
-                    </div>
-                    <div class="tarjeta__texto">
-                        <h3>Lugar 4</h3>
-                        <p>Categoria - distancia - $$</p>
-                        <a href="" class="boton__vermas" aria-label="Ver más detalles sobre el Lugar 4">Ver mas</a>
-                    </div>
-                </div>
-
-                <div class="tarjeta">
-                    <div class="tarjeta__img">
-                        <img src="https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=" alt="Vista panorámica del paisaje natural para el Lugar 5" width="100%" height="100%">
-                    </div>
-                    <div class="tarjeta__texto">
-                        <h3>Lugar 5</h3>
-                        <p>Categoria - distancia - $$</p>
-                        <a href="" class="boton__vermas" aria-label="Ver más detalles sobre el Lugar 5">Ver mas</a>
-                    </div>
-                </div>
-
-                <div class="tarjeta">
-                    <div class="tarjeta__img">
-                        <img src="https://media.istockphoto.com/id/522629342/es/foto/araucaria-bosque-en-conguillio-parque-nacional-chile.jpg?s=612x612&w=0&k=20&c=WV_sJsuUyDALHfGpSMAKbXt1bhhFWoMemsHRofh_BBQ=" alt="Vista panorámica del paisaje natural para el Lugar 6" width="100%" height="100%">
-                    </div>
-                    <div class="tarjeta__texto">
-                        <h3>Lugar 6</h3>
-                        <p>Categoria - distancia - $$</p>
-                        <a href="" class="boton__vermas" aria-label="Ver más detalles sobre el Lugar 6">Ver mas</a>
-                    </div>
-                </div>
-        </section>
+        <section class="grid__lugares" id="catalogo-grid" aria-label="Lista de lugares" hidden></section>
 
         <section>
             <div class="cambio__pagina">
