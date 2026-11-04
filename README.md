@@ -26,8 +26,9 @@
   - HTML5
   - CSS3
   - JavaScript
+  - TypeScript
   - (Framework a definir)
-  - (API consumida)
+  - MockApi
 
 ## Cómo ejecutar el proyecto
 
@@ -38,7 +39,7 @@
 ## Estado del proyecto 
 
   - Sprint actual: Sprint 2
-  - Última actualización: 6 oct
+  - Última actualización: 3 nov
 
 ## Tablero Kanban
 
