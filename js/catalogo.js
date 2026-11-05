@@ -2,6 +2,8 @@ const API_URL = "https://6ad7dc9f95e98f36aef2d123.mockapi.io/api/v1/lugares";
 const LIMITE = 6;
 const TIEMPO_MAXIMO_MS = 10000;
 const IMAGEN_RESPALDO = "../assets/imagenes/Temuco-paisaje-1.webp";
+const ICONO_ERROR =
+  '<svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
 
 const grid = document.getElementById("catalogo-grid");
 const estado = document.getElementById("catalogo-estado");
@@ -11,6 +13,8 @@ const indicador = document.getElementById("pagina-indicador");
 
 let paginaActual = 1;
 let totalPaginas = null;
+let avisoExito = null;
+let avisoTemporizador = null;
 
 async function pedirJSON(url) {
   const controlador = new AbortController();
@@ -155,11 +159,50 @@ function renderizarTarjetas(lugares) {
   grid.replaceChildren(fragmento);
 }
 
+function crearLineaSkeleton(variante) {
+  const linea = document.createElement("span");
+  linea.className = variante
+    ? `skeleton-linea skeleton-linea--${variante}`
+    : "skeleton-linea";
+  return linea;
+}
+
+function crearTarjetaSkeleton() {
+  const tarjeta = document.createElement("div");
+  tarjeta.className = "tarjeta tarjeta--skeleton";
+  tarjeta.setAttribute("aria-hidden", "true");
+
+  const contenedorImg = document.createElement("div");
+  contenedorImg.className = "tarjeta__img";
+
+  const bloqueImg = document.createElement("div");
+  bloqueImg.className = "skeleton-img";
+  contenedorImg.appendChild(bloqueImg);
+
+  const contenedorTxt = document.createElement("div");
+  contenedorTxt.className = "tarjeta__texto";
+
+  const titulo = document.createElement("h3");
+  titulo.appendChild(crearLineaSkeleton("titulo"));
+  contenedorTxt.appendChild(titulo);
+
+  contenedorTxt.appendChild(crearLineaSkeleton("corta"));
+  contenedorTxt.appendChild(crearLineaSkeleton());
+  contenedorTxt.appendChild(crearLineaSkeleton());
+  contenedorTxt.appendChild(crearLineaSkeleton("media"));
+
+  const boton = document.createElement("span");
+  boton.className = "skeleton-boton";
+  contenedorTxt.appendChild(boton);
+
+  tarjeta.append(contenedorImg, contenedorTxt);
+  return tarjeta;
+}
+
 function mostrarCargando() {
-  grid.hidden = true;
-  grid.replaceChildren();
   estado.hidden = false;
   estado.className = "catalogo-estado catalogo-estado--cargando";
+  estado.setAttribute("role", "status");
   estado.replaceChildren();
 
   const spinner = document.createElement("span");
@@ -170,16 +213,51 @@ function mostrarCargando() {
   mensaje.textContent = "Cargando lugares...";
 
   estado.append(spinner, mensaje);
+
+  const fragmento = document.createDocumentFragment();
+  for (let i = 0; i < LIMITE; i += 1) {
+    fragmento.appendChild(crearTarjetaSkeleton());
+  }
+  grid.hidden = false;
+  grid.replaceChildren(fragmento);
+}
+
+function mostrarAvisoExito(mensaje) {
+  if (!avisoExito) {
+    avisoExito = document.createElement("div");
+    avisoExito.className = "catalogo-toast";
+    avisoExito.setAttribute("role", "status");
+    avisoExito.setAttribute("aria-live", "polite");
+    document.body.appendChild(avisoExito);
+  }
+  clearTimeout(avisoTemporizador);
+  avisoExito.textContent = mensaje;
+  avisoExito.classList.add("catalogo-toast--visible");
+  avisoTemporizador = setTimeout(() => {
+    avisoExito.classList.remove("catalogo-toast--visible");
+  }, 2500);
 }
 
 function mostrarError(mensajeError, reintento) {
   grid.hidden = true;
+  grid.replaceChildren();
   estado.hidden = false;
   estado.className = "catalogo-estado catalogo-estado--error";
+  estado.setAttribute("role", "alert");
   estado.replaceChildren();
 
-  const mensaje = document.createElement("p");
-  mensaje.textContent = `No pudimos cargar los lugares. ${mensajeError}`;
+  const icono = document.createElement("span");
+  icono.className = "catalogo-error-icono";
+  icono.setAttribute("aria-hidden", "true");
+  icono.innerHTML = ICONO_ERROR;
+
+  const titulo = document.createElement("h3");
+  titulo.className = "catalogo-error-titulo";
+  titulo.textContent = "No pudimos cargar los lugares";
+
+  const detalle = document.createElement("p");
+  detalle.className = "catalogo-error-detalle";
+  detalle.textContent = mensajeError;
 
   const boton = document.createElement("button");
   boton.type = "button";
@@ -187,13 +265,15 @@ function mostrarError(mensajeError, reintento) {
   boton.textContent = "Reintentar";
   boton.addEventListener("click", reintento);
 
-  estado.append(mensaje, boton);
+  estado.append(icono, titulo, detalle, boton);
 }
 
 function mostrarVacio() {
   grid.hidden = true;
+  grid.replaceChildren();
   estado.hidden = false;
   estado.className = "catalogo-estado";
+  estado.setAttribute("role", "status");
   estado.replaceChildren();
 
   const mensaje = document.createElement("p");
@@ -206,6 +286,7 @@ function mostrarExito(lugares) {
   estado.replaceChildren();
   grid.hidden = false;
   renderizarTarjetas(lugares);
+  mostrarAvisoExito("✓ Lugares cargados correctamente");
 }
 
 function actualizarPaginacion(cargando = false) {
