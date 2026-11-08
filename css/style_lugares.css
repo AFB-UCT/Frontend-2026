@@ -187,25 +187,42 @@ footer {
     justify-content: center;
     gap: 10px;
 }
-.nav__2 a {
-    flex: 1 1 20%;
-    min-width: 100px;
-    max-width: 300px;
+.nav__2 select {
+    flex: 1 1 25%;          
+    min-width: 140px;
+    max-width: 320px;
     padding: 12px 15px;
     border-radius: 10px;
     background-color: #3A6B56;
     color: #E1ECE7;
     border: 1px solid #2B5441;
     font-weight: 600;
-    text-decoration: none;
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    outline: none;
     transition: background-color 0.2s, transform 0.2s;
 }
-.nav__2 a:hover,
-.nav__2 a:focus-visible {
+
+.nav__2 select:hover,
+.nav__2 select:focus-visible {
     background-color: #2B5441;
     transform: translateY(-3px);
-    outline: 2px solid #D98A5B;
+    outline: none;
     outline-offset: 2px;
+}
+
+.nav__2 select option {
+    background-color: #264638;
+    color: #F2F8F6;
+    font-weight: 500;
+}
+
+.tarjeta__calificacion {
+    font-size: 0.95rem;
+    color: #b45309;          
+    margin: 2px 0;
 }
 
 .grid__lugares {
@@ -253,6 +270,11 @@ footer {
 .tarjeta__direccion {
     font-size: 0.9rem;
     font-weight: 600;
+    color: #2B5441;
+}
+.tarjeta__calificacion {
+    font-size: 0.95rem;
+    font-weight: 700;
     color: #2B5441;
 }
 .tarjeta__contacto {

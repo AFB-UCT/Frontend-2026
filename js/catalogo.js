@@ -2,17 +2,27 @@ const API_URL = "https://6ad7dc9f95e98f36aef2d123.mockapi.io/api/v1/lugares";
 const LIMITE = 6;
 const TIEMPO_MAXIMO_MS = 10000;
 const IMAGEN_RESPALDO = "../assets/imagenes/Temuco-paisaje-1.webp";
-const ICONO_ERROR =
-  '<svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
-
+const ICONO_ERROR ='<svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
 const grid = document.getElementById("catalogo-grid");
 const estado = document.getElementById("catalogo-estado");
 const btnAnterior = document.getElementById("pagina-anterior");
 const btnSiguiente = document.getElementById("pagina-siguiente");
 const indicador = document.getElementById("pagina-indicador");
+const selectorCategoria = document.getElementById("filtro-categoria");
+const selectorSector = document.getElementById("filtro-sector");
+const selectorCalificacion = document.getElementById("filtro-calificacion");
 
+let todosLosLugares = [];      
+let lugaresFiltrados = [];     
 let paginaActual = 1;
-let totalPaginas = null;
+let totalPaginas = 1;
+
+const filtrosActivos = {
+  categoria: "todas",
+  sector: "todos",
+  calificacion: "todas"
+};
+
 let avisoExito = null;
 let avisoTemporizador = null;
 
@@ -29,43 +39,6 @@ async function pedirJSON(url) {
     throw new Error("Revisa tu conexión a internet e inténtalo de nuevo.");
   } finally {
     clearTimeout(reloj);
-  }
-}
-
-async function obtenerLugares(pagina) {
-  const respuesta = await pedirJSON(`${API_URL}?page=${pagina}&limit=${LIMITE}`);
-
-  if (respuesta.status === 404 && pagina > 1) {
-    return [];
-  }
-  if (!respuesta.ok) {
-    throw new Error(`Error del servidor (código ${respuesta.status}).`);
-  }
-
-  let datos;
-  try {
-    datos = await respuesta.json();
-  } catch {
-    throw new Error("La respuesta del servidor no es un JSON válido.");
-  }
-
-  if (!Array.isArray(datos)) {
-    throw new Error("La API no devolvió una lista de lugares.");
-  }
-
-  return datos.map(normalizarLugar).filter(Boolean);
-}
-
-async function obtenerTotalPaginas() {
-  try {
-    const respuesta = await pedirJSON(API_URL);
-    if (!respuesta.ok) return null;
-    const datos = await respuesta.json();
-    return Array.isArray(datos)
-      ? Math.max(1, Math.ceil(datos.length / LIMITE))
-      : null;
-  } catch {
-    return null;
   }
 }
 
@@ -86,8 +59,66 @@ function normalizarLugar(crudo) {
     direccion: texto(crudo.address),
     telefono: texto(crudo.phone),
     correo: texto(crudo.email),
+    sector: texto(crudo.sector) || "Temuco",
+    categoria: texto(crudo.categoria) || "Lugar natural",
+    calificacion: crudo.calificacion ? Number(crudo.calificacion) : null,
+    googleMapsUrl: texto(crudo.googleMapsUrl),
     imagen: /^(https?:\/\/|\.{0,2}\/)/i.test(imagen) ? imagen : IMAGEN_RESPALDO,
   };
+}
+
+function aplicarFiltros() {
+  let resultado = [...todosLosLugares];
+
+  if (filtrosActivos.categoria !== "todas") {
+    resultado = resultado.filter(lugar => 
+      lugar.categoria.toLowerCase() === filtrosActivos.categoria.toLowerCase()
+    );
+  }
+
+  if (filtrosActivos.sector !== "todos") {
+    const sectoresPrincipales = ["temuco", "padre las casas", "labranza", "cholchol", "vilcún", "vilcun"];
+    
+    if (filtrosActivos.sector === "Otros sectores rurales") {
+      resultado = resultado.filter(lugar => {
+        const sec = lugar.sector.toLowerCase();
+        return sec === "otros sectores rurales" || !sectoresPrincipales.includes(sec);
+      });
+    } else {
+      resultado = resultado.filter(lugar => 
+        lugar.sector.toLowerCase() === filtrosActivos.sector.toLowerCase()
+      );
+    }
+  }
+
+  if (filtrosActivos.calificacion !== "todas") {
+    const califMinima = parseFloat(filtrosActivos.calificacion);
+    resultado = resultado.filter(lugar => 
+      (lugar.calificacion || 0) >= califMinima
+    );
+  }
+
+  lugaresFiltrados = resultado;
+
+  paginaActual = 1;
+  totalPaginas = Math.max(1, Math.ceil(lugaresFiltrados.length / LIMITE));
+
+  mostrarPaginaActual();
+}
+
+function mostrarPaginaActual() {
+  if (lugaresFiltrados.length === 0) {
+    mostrarVacio();
+    actualizarPaginacion();
+    return;
+  }
+
+  const inicio = (paginaActual - 1) * LIMITE;
+  const fin = inicio + LIMITE;
+  const lugaresDeLaPagina = lugaresFiltrados.slice(inicio, fin);
+
+  mostrarExito(lugaresDeLaPagina);
+  actualizarPaginacion();
 }
 
 function crearLinea(clase, contenido) {
@@ -125,8 +156,15 @@ function crearTarjeta(lugar) {
   titulo.textContent = lugar.nombre;
   contenedorTxt.appendChild(titulo);
 
+  if (lugar.calificacion) {
+    const califTexto = document.createElement("p");
+    califTexto.className = "tarjeta__calificacion";
+    califTexto.innerHTML = `⭐ <strong>${lugar.calificacion}</strong> <span style="font-size:0.8rem; color:#666;">(Google Maps)</span>`;
+    contenedorTxt.appendChild(califTexto);
+  }
+
   if (lugar.direccion) {
-    contenedorTxt.appendChild(crearLinea("tarjeta__direccion", lugar.direccion));
+    contenedorTxt.appendChild(crearLinea("tarjeta__direccion", `📍 ${lugar.direccion}`));
   }
   if (lugar.descripcion) {
     contenedorTxt.appendChild(crearLinea("tarjeta__descripcion", lugar.descripcion));
@@ -139,12 +177,12 @@ function crearTarjeta(lugar) {
   }
 
   const verMas = document.createElement("a");
-  verMas.href = "#";
+  verMas.href = lugar.googleMapsUrl || "#";
+  if (lugar.googleMapsUrl) verMas.target = "_blank";
   verMas.className = "boton__vermas";
   verMas.textContent = "Ver mas";
   verMas.dataset.id = lugar.id;
   verMas.setAttribute("aria-label", `Ver más detalles sobre ${lugar.nombre}`);
-  verMas.addEventListener("click", (e) => e.preventDefault());
   contenedorTxt.appendChild(verMas);
 
   tarjeta.append(contenedorImg, contenedorTxt);
@@ -242,7 +280,7 @@ function mostrarError(mensajeError, reintento) {
   grid.hidden = true;
   grid.replaceChildren();
   estado.hidden = false;
-  estado.className = "catalogo-estado catalogo-estado--error";
+  estado.className = "catalogo-error";
   estado.setAttribute("role", "alert");
   estado.replaceChildren();
 
@@ -277,7 +315,7 @@ function mostrarVacio() {
   estado.replaceChildren();
 
   const mensaje = document.createElement("p");
-  mensaje.textContent = "Aún no hay lugares disponibles.";
+  mensaje.textContent = "No se encontraron lugares con los filtros seleccionados.";
   estado.append(mensaje);
 }
 
@@ -289,62 +327,63 @@ function mostrarExito(lugares) {
   mostrarAvisoExito("✓ Lugares cargados correctamente");
 }
 
-function actualizarPaginacion(cargando = false) {
-  btnAnterior.disabled = cargando || paginaActual <= 1;
-  btnSiguiente.disabled =
-    cargando || (totalPaginas !== null && paginaActual >= totalPaginas);
+function actualizarPaginacion() {
+  btnAnterior.disabled = paginaActual <= 1;
+  btnSiguiente.disabled = paginaActual >= totalPaginas;
 
-  indicador.textContent = totalPaginas
-    ? `Pagina ${paginaActual} de ${totalPaginas}`
-    : `Pagina ${paginaActual}`;
-}
-
-async function irAPagina(pagina) {
-  mostrarCargando();
-  actualizarPaginacion(true);
-
-  try {
-    const lugares = await obtenerLugares(pagina);
-
-    if (lugares.length === 0) {
-      if (pagina > 1) {
-        totalPaginas = pagina - 1;
-        return irAPagina(pagina - 1);
-      }
-      paginaActual = 1;
-      mostrarVacio();
-      return;
-    }
-
-    paginaActual = pagina;
-    if (lugares.length < LIMITE) {
-      totalPaginas = pagina;
-    }
-    mostrarExito(lugares);
-  } catch (error) {
-    console.error("Error al cargar el catálogo:", error);
-    mostrarError(error.message, () => irAPagina(pagina));
-  } finally {
-    actualizarPaginacion();
-  }
+  indicador.textContent = `Pagina ${paginaActual} de ${totalPaginas}`;
 }
 
 function cambiarPagina(nuevaPagina) {
-  document.querySelector(".catalogo").scrollIntoView({
-    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? "auto"
-      : "smooth",
+  if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+    paginaActual = nuevaPagina;
+    document.querySelector(".catalogo").scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+    mostrarPaginaActual();
+  }
+}
+
+async function cargarCatalogo() {
+  mostrarCargando();
+  try {
+    const respuesta = await pedirJSON(API_URL);
+    if (!respuesta.ok) throw new Error(`Error en el servidor (${respuesta.status})`);
+    
+    const datos = await respuesta.json();
+    todosLosLugares = datos.map(normalizarLugar).filter(Boolean);
+
+    aplicarFiltros();
+  } catch (error) {
+    console.error("Error al cargar lugares:", error);
+    mostrarError(error.message, cargarCatalogo);
+  }
+}
+
+if (selectorCategoria) {
+  selectorCategoria.addEventListener("change", (e) => {
+    filtrosActivos.categoria = e.target.value;
+    aplicarFiltros();
   });
-  irAPagina(nuevaPagina);
+}
+
+if (selectorSector) {
+  selectorSector.addEventListener("change", (e) => {
+    filtrosActivos.sector = e.target.value;
+    aplicarFiltros();
+  });
+}
+
+if (selectorCalificacion) {
+  selectorCalificacion.addEventListener("change", (e) => {
+    filtrosActivos.calificacion = e.target.value;
+    aplicarFiltros();
+  });
 }
 
 btnAnterior.addEventListener("click", () => cambiarPagina(paginaActual - 1));
 btnSiguiente.addEventListener("click", () => cambiarPagina(paginaActual + 1));
 
-irAPagina(1);
-obtenerTotalPaginas().then((total) => {
-  if (total) {
-    totalPaginas = total;
-    actualizarPaginacion();
-  }
-});
+cargarCatalogo();
