@@ -25,13 +25,32 @@
                 
                 
         <section class="catalogo">
-                <h2>Catálogo de lugares</h2>
-                <div class="nav__2">
-                    <a href="">Categoria</a>
-                    <a href="">Distancia</a>
-                    <a href="">Precio</a>
-                    <a href="">Calificación</a>
-                </div>
+            <h2>Catálogo de lugares</h2>
+            <div class="nav__2">
+                <select id="filtro-categoria" aria-label="Filtrar por categoría">
+                    <option value="todas">Categoría: Todas</option>
+                    <option value="Lugar natural">Lugar natural</option>
+                    <option value="Cultura y patrimonio">Cultura y patrimonio</option>
+                    <option value="Tienda o punto de venta">Tienda o punto de venta</option>
+                </select>
+
+                <select id="filtro-sector" aria-label="Filtrar por sector">
+                    <option value="todos">Sector: Todos</option>
+                    <option value="Temuco">Temuco</option>
+                    <option value="Padre Las Casas">Padre Las Casas</option>
+                    <option value="Labranza">Labranza</option>
+                    <option value="Cholchol">Cholchol</option>
+                    <option value="Vilcún">Vilcún</option>
+                    <option value="Otros sectores rurales">Otros sectores rurales</option>
+                </select>
+
+                <select id="filtro-calificacion" aria-label="Filtrar por calificación">
+                    <option value="todas">Calificación: Todas</option>
+                    <option value="4.7">⭐⭐⭐⭐⭐ 4.7 o más (Excelentes)</option>
+                    <option value="4.5">⭐⭐⭐⭐ 4.5 o más (Muy recomendados)</option>
+                    <option value="4.0">⭐⭐⭐ 4.0 o más (Buenos)</option>
+                </select>
+            </div>
         </section>
 
         <div id="catalogo-estado" class="catalogo-estado" role="status" aria-live="polite" hidden></div>
