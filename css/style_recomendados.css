@@ -124,14 +124,32 @@ footer{
 
 .recomendados__grid {
     display: grid;
-    /* Esto hace que las tarjetas bajen solas en pantallas pequeñas */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 25px;
     width: 100%;
 }
+.lugar-aside{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: justify;
+    gap: 20px;
+}
+.lugar-aside p{
+    font-weight: 400;
+    font-size: 20px;
+}
+.lugar-aside h3{
+    font-weight: 750;
+    font-size: 30px;
+}
+
+
 
 .lugar-card {
-    margin-bottom: 50px;
+    width: auto;
+    height: auto;
     background-color: #D5E5DD;
     border-radius: 10px;
     overflow: hidden;
@@ -139,13 +157,10 @@ footer{
     border: 1px solid #1F7A4D;
 }
 
-.lugar-card:hover {
-    transform: translateY(-6px);
-}
 
 .lugar-card__img-placeholder {
     width: 100%;
-    height: 180px;
+    height: 100%;
     background-color: #E1ECE7;
     display: flex;
     justify-content: center;
@@ -160,17 +175,6 @@ footer{
     display: flex;
     flex-direction: column;
     gap: 15px;
-}
-
-.lugar-card__info h3 {
-    margin: 0;
-    color: #1A2A23;
-}
-
-.lugar-card__info p {
-    margin: 0;
-    color: #1A2A23;
-    line-height: 1.5;
 }
 
 .btn-ruta {
@@ -192,7 +196,7 @@ footer{
 .lugar-card img{
     display: block;
     width: 100%;
-    height: 220px;
+    height: 500px;
     object-fit: cover;
 }
 
@@ -241,5 +245,230 @@ h3{
     footer{
         height: 200px;
         margin-bottom: 50px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+.recomendados__contenedor {
+    width: 90%;
+    max-width: 1400px;
+    margin: 50px auto 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.recomendados__titulo {
+    font-size: 2rem;
+    color: #1A2A23;
+    text-align: center;
+}
+
+.recomendados__grid {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+/* Cada recomendación */
+
+.recomendado-item {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.95fr) minmax(300px, 1fr);
+    gap: 25px;
+    width: 100%;
+    align-items: stretch;
+}
+
+/* Carta de imagen */
+
+.lugar-card {
+    width: 100%;
+    background-color: #D5E5DD;
+    border: 1px solid #1F7A4D;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.lugar-card img {
+    display: block;
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.lugar-card__info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+/* Botón de ruta */
+
+.btn-ruta {
+    width: 100%;
+    padding: 10px;
+    background-color: #2B5441;
+    color: white;
+    border: 1px solid #1A2A23;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s, transform 0.3s ease;
+}
+
+.btn-ruta:hover {
+    background-color: #1F7A4D;
+    transform: translateY(-3px);
+}
+
+/* Información del lugar */
+
+.lugar-aside {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    min-width: 0;
+}
+
+.lugar-aside h3 {
+    color: #000;
+    font-size: 1.8rem;
+    font-weight: 750;
+    text-align: center;
+}
+
+.lugar-descripcion {
+    font-size: 1.05rem;
+    line-height: 1.4;
+    text-align: center;
+    color: #000;
+}
+
+/* Calificacion */
+
+.lugar-calificacion {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+
+.calificacion-valor {
+    color: #000;
+    font-size: 0.95rem;
+}
+
+.calificacion-estrella {
+    color: #FFE600;
+    font-size: 2rem;
+}
+
+/* Direccion */
+
+.lugar-direccion {
+    padding: 15px;
+    text-align: center;
+    width: 100%;
+    font-size: 1rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+
+
+/* Estados de carga y errores */
+
+.estado-carga,
+.estado-error,
+.estado-vacio {
+    width: 100%;
+    text-align: center;
+    padding: 25px;
+    color: #1A2A23;
+    background-color: white;
+    border-radius: 10px;
+}
+
+/* Adaptacion para tablets y celulares */
+
+@media (max-width: 760px) {
+
+    .recomendado-item {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .lugar-card img {
+        height: 320px;
+    }
+
+    .lugar-aside {
+        padding: 10px 0;
+    }
+
+    .lugar-aside h3 {
+        font-size: 1.5rem;
+    }
+
+    .lugar-descripcion {
+        font-size: 1rem;
+    }
+
+    .recomendados__titulo {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 620px) {
+
+    .recomendados__contenedor {
+        width: 90%;
+        margin-top: 35px;
+    }
+
+    .lugar-card img {
+        height: 260px;
+    }
+
+    .lugar-calificacion {
+        flex-wrap: wrap;
+    }
+}
+
+@media (min-width: 1900px) {
+
+    .recomendados__contenedor {
+        max-width: 1700px;
+    }
+
+    .recomendado-item {
+        gap: 40px;
+    }
+
+    .lugar-card img {
+        height: 550px;
     }
 }
