@@ -159,7 +159,7 @@ function crearTarjeta(lugar) {
   if (lugar.calificacion) {
     const califTexto = document.createElement("p");
     califTexto.className = "tarjeta__calificacion";
-    califTexto.innerHTML = `⭐ <strong>${lugar.calificacion}</strong> <span style="font-size:0.8rem; color:#666;">(Google Maps)</span>`;
+    califTexto.innerHTML = `⭐ <strong>${lugar.calificacion}</strong> <span class="tarjeta__fuente">(Google Maps)</span>`;
     contenedorTxt.appendChild(califTexto);
   }
 
