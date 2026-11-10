@@ -275,6 +275,10 @@ footer {
 .tarjeta__calificacion {
     font-size: 0.95rem;
     font-weight: 700;
+    color: #1A2A23;
+}
+.tarjeta__fuente {
+    font-size: 0.8rem;
     color: #2B5441;
 }
 .tarjeta__contacto {
