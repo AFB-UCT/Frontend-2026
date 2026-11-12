@@ -1,87 +1,88 @@
-*{
-    margin: 0%;
-    padding: 0%;
+/* ===== Base (igual que style_index.css) ===== */
+* {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-body{
+
+body {
     font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
-    font-size: 20px;
-    line-height: 1.3;
-}
-main{
-    box-sizing: border-box;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+    font-size: 18px;
+    line-height: 1.4;
     background-color: #F2F8F6;
-    justify-content: center;
-    align-items: center;
+    color: #1A2A23;
 }
-header{
+
+header {
     width: 100%;
-    height: 90px;
+    min-height: 90px;
     background-color: #3A6B56;
     display: flex;
-    flex-direction: row;
     justify-content: center;
     align-items: center;
 }
-header a{
+
+header a {
     text-decoration: none;
     color: #E1ECE7;
+    font-size: 2rem;
+    font-weight: bold;
 }
-nav{
+
+nav {
     width: 100%;
-    height: auto;
     background-color: #3A6B56;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 10px;
 }
-.navegacion__buscador{
+
+.navegacion__buscador {
     width: 90%;
-    height: 40px;
+    max-width: 800px;
+    min-height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 10px;
 }
-.nav__l{
-    height: 70px;
+
+.nav__l {
     display: flex;
-    margin-top: 5px;
-    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 30px;
-    margin-bottom: 10px;
+    gap: 15px;
+    max-width: 1200px;
+    width: 100%;
+    padding: 10px;
 }
-@media (max-width: 2000px) {
-    .nav__l{
-        flex-wrap: wrap;
-        height: auto;
-        gap: 10px;
-        padding: 10px 0;
-    }
-}
-.nav__l a{
-    height: auto;
-    width: 200px;
+
+.nav__l a {
     text-align: center;
     text-decoration: none;
-    justify-content: center;
-    align-items: center;
-    color: #000000;
+    color: #1A2A23;
     background-color: #E1ECE7;
     border-radius: 10px;
-    padding: 17px;
+    padding: 12px 20px;
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
 }
+
 .nav__l a:hover {
     background-color: #dbfcee;
 }
+
+main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 footer {
     width: 100%;
     background-color: #F2F8F6;
@@ -105,66 +106,11 @@ footer h4 {
     font-size: 0.9rem;
 }
 
-
-
-
-
-
-
-
-@media (max-width: 620px) {
-    .nav__l a{
-        width: 100px;
-        padding: 10px;
-        font-size: 0.7rem;
-    }
-}
-
-@media (min-width: 1900px) {
-    html{
-        font-size: 30px;
-    }
-    header h1{
-        font-size: 3rem;
-        height: auto;
-    }
-    header{
-        padding: 3rem;
-    }
-    .nav__b input{
-        font-size: 2rem;
-    }
-    .nav__l a{
-        margin: 10px;
-        width: 390px;
-        padding: 20px;
-        font-size: 1.5rem;
-    }
-    .nav__l{
-        margin-bottom: 20px;
-        padding: 2rem;
-        height: auto;
-    }
-    footer{
-        height: 200px;
-        margin-bottom: 50px;
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
+/* ===== Recomendados ===== */
 .recomendados__contenedor {
     width: 90%;
-    max-width: 1400px;
-    margin: 50px auto 70px;
+    max-width: 1200px;
+    margin: 70px auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -184,18 +130,15 @@ footer h4 {
     gap: 35px;
 }
 
-/* Cada recomendación */
-
 .recomendado-item {
     display: grid;
-    grid-template-columns: minmax(260px, 0.95fr) minmax(300px, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 25px;
     width: 100%;
     align-items: stretch;
 }
 
 /* Carta de imagen */
-
 .lugar-card {
     width: 100%;
     background-color: #D5E5DD;
@@ -222,7 +165,6 @@ footer h4 {
 }
 
 /* Botón de ruta */
-
 .btn-ruta {
     width: 100%;
     padding: 10px;
@@ -231,8 +173,8 @@ footer h4 {
     border: 1px solid #1A2A23;
     border-radius: 8px;
     font-weight: 600;
-    cursor: pointer;
     font-size: 1rem;
+    cursor: pointer;
     transition: background-color 0.2s, transform 0.3s ease;
 }
 
@@ -242,7 +184,6 @@ footer h4 {
 }
 
 /* Información del lugar */
-
 .lugar-aside {
     width: 100%;
     display: flex;
@@ -253,7 +194,7 @@ footer h4 {
 }
 
 .lugar-aside h3 {
-    color: #000;
+    color: #1A2A23;
     font-size: 1.8rem;
     font-weight: 750;
     text-align: center;
@@ -261,13 +202,12 @@ footer h4 {
 
 .lugar-descripcion {
     font-size: 1.05rem;
-    line-height: 1.4;
+    line-height: 1.5;
     text-align: center;
-    color: #000;
+    color: #1A2A23;
 }
 
-/* Calificacion */
-
+/* Calificación */
 .lugar-calificacion {
     width: 100%;
     min-height: 48px;
@@ -278,9 +218,8 @@ footer h4 {
     gap: 10px;
 }
 
-
 .calificacion-valor {
-    color: #000;
+    color: #1A2A23;
     font-size: 0.95rem;
 }
 
@@ -289,8 +228,7 @@ footer h4 {
     font-size: 2rem;
 }
 
-/* Direccion */
-
+/* Dirección */
 .lugar-direccion {
     padding: 15px;
     text-align: center;
@@ -300,10 +238,7 @@ footer h4 {
     overflow-wrap: anywhere;
 }
 
-
-
 /* Estados de carga y errores */
-
 .estado-carga,
 .estado-error,
 .estado-vacio {
@@ -315,10 +250,8 @@ footer h4 {
     border-radius: 10px;
 }
 
-/* Adaptacion para tablets y celulares */
-
-@media (max-width: 760px) {
-
+/* ===== Responsive (mismo breakpoint que index) ===== */
+@media (max-width: 900px) {
     .recomendado-item {
         grid-template-columns: 1fr;
         gap: 15px;
@@ -342,36 +275,5 @@ footer h4 {
 
     .recomendados__titulo {
         font-size: 1.6rem;
-    }
-}
-
-@media (max-width: 620px) {
-
-    .recomendados__contenedor {
-        width: 90%;
-        margin-top: 35px;
-    }
-
-    .lugar-card img {
-        height: 260px;
-    }
-
-    .lugar-calificacion {
-        flex-wrap: wrap;
-    }
-}
-
-@media (min-width: 1900px) {
-
-    .recomendados__contenedor {
-        max-width: 1700px;
-    }
-
-    .recomendado-item {
-        gap: 40px;
-    }
-
-    .lugar-card img {
-        height: 550px;
     }
 }
