@@ -96,23 +96,26 @@ nav{
 }
 footer {
     width: 100%;
-    height: 180px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    background-color: #F2F8F6;
     text-align: center;
-    margin-top: 20px;
+    line-height: 1.6;
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
+
+footer h4 {
+    color: #2B5441;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
 }
 
 .copy {
-    display: flex;
     width: 100%;
     background-color: #1A2A23;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
     color: #E1ECE7;
-    padding:10px;
+    padding: 15px;
+    font-size: 0.9rem;
 }
 
 @media (max-width: 620px) {

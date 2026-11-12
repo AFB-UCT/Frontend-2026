@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoLugares - Main</title>
+    <title>EcoRuta</title>
     <link rel="stylesheet" href="./style_index.css">
+    <script src="ts/recomendados.ts" defer></script>
+    <script src="js/recomendados.js" defer></script>
 </head>
 <body>
     <header>
-        <h1><a href="./index.html">EcoLugares</a></h1>
+        <h1><a href="./index.html">EcoRuta</a></h1>
     </header>
 
     <nav>
@@ -17,7 +19,7 @@
             <a href="paginas/horarios.html" aria-label="Ver los horarios de los servicios">Horarios</a>
             <a href="paginas/mapa.html" aria-label="Ver el mapa de rutas y sucursales">Mapa</a>
             <a href="paginas/info.html" aria-label="Ver información sobre la empresa">Información</a>
-            <a href="paginas/recomendados.html" aria-label="Ver los lugares recomendados">Emprendimientos</a>
+            <a href="paginas/emprendimientos.html" aria-label="Ver los lugares recomendados">Emprendimientos</a>
         </div>
     </nav>
 
@@ -59,6 +61,8 @@
             </div>
         </section>
 
+
+
         <section class="seccion-explora">
             <h2>Explora</h2>
             <div class="tarjetas">
@@ -85,6 +89,21 @@
                 </div>
             </div>
         </section>
+
+        <section class="recomendados__contenedor">
+
+            <h2 class="recomendados__titulo">
+                Los Favoritos de la Semana
+            </h2>
+
+            <div class="recomendados__grid" id="lista-recomendados">
+
+                <p class="estado-carga">Cargando lugares recomendados...</p>
+
+            </div>
+
+        </section>
+
     </main>
 
     <footer>

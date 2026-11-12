@@ -295,27 +295,25 @@ nav {
 
 footer {
     width: 100%;
-    min-height: 140px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    background-color: #F2F8F6;
     text-align: center;
-    font-size: 1rem;
     line-height: 1.6;
-    padding-top: 15px;
+    margin-bottom: 50px;
+}
+
+footer h4 {
+    color: #2B5441;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
 }
 
 .copy {
-    display: flex;
     width: 100%;
     background-color: #1A2A23;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
     color: #E1ECE7;
-    padding: 12px;
-    font-size: 0.95rem;
-    margin-top: 15px;
+    padding: 15px;
+    font-size: 0.9rem;
 }
 
 .error {
