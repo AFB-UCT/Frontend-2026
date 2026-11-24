@@ -3,6 +3,14 @@ const LIMITE = 6;
 const TIEMPO_MAXIMO_MS = 10000;
 const IMAGEN_RESPALDO = "../assets/imagenes/Temuco-paisaje-1.webp";
 const ICONO_ERROR ='<svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+const CLAVE_ESTADO = "ecoruta:catalogo:estado";
+const VERSION_ESTADO = 1;
+const FILTROS_POR_DEFECTO = {
+  categoria: "todas",
+  sector: "todos",
+  calificacion: "todas"
+};
+
 const grid = document.getElementById("catalogo-grid");
 const estado = document.getElementById("catalogo-estado");
 const btnAnterior = document.getElementById("pagina-anterior");
@@ -11,20 +19,168 @@ const indicador = document.getElementById("pagina-indicador");
 const selectorCategoria = document.getElementById("filtro-categoria");
 const selectorSector = document.getElementById("filtro-sector");
 const selectorCalificacion = document.getElementById("filtro-calificacion");
+const contenedorFiltros = document.getElementById("filtros-activos");
 
-let todosLosLugares = [];      
-let lugaresFiltrados = [];     
+const selectores = {
+  categoria: selectorCategoria,
+  sector: selectorSector,
+  calificacion: selectorCalificacion
+};
+
+let todosLosLugares = [];
+let lugaresFiltrados = [];
 let paginaActual = 1;
 let totalPaginas = 1;
 
-const filtrosActivos = {
-  categoria: "todas",
-  sector: "todos",
-  calificacion: "todas"
-};
+const filtrosActivos = { ...FILTROS_POR_DEFECTO };
+
+let datosCargados = false;
+let estadoRestaurado = false;
+let scrollPendiente = null;
+let saliendoAFicha = false;
 
 let avisoExito = null;
 let avisoTemporizador = null;
+
+function guardarEstado() {
+  if (!datosCargados) return;
+  try {
+    sessionStorage.setItem(
+      CLAVE_ESTADO,
+      JSON.stringify({
+        version: VERSION_ESTADO,
+        filtros: { ...filtrosActivos },
+        pagina: paginaActual,
+        scrollY: Math.round(window.scrollY),
+        desdeFicha: saliendoAFicha
+      })
+    );
+  } catch (error) {
+  }
+}
+
+function leerEstadoGuardado() {
+  try {
+    const crudo = sessionStorage.getItem(CLAVE_ESTADO);
+    if (!crudo) return null;
+    const guardado = JSON.parse(crudo);
+    if (
+      !guardado ||
+      guardado.version !== VERSION_ESTADO ||
+      typeof guardado.filtros !== "object" ||
+      guardado.filtros === null
+    ) {
+      return null;
+    }
+    return guardado;
+  } catch (error) {
+    return null;
+  }
+}
+
+function restaurarFiltrosGuardados(guardado) {
+  for (const clave of Object.keys(FILTROS_POR_DEFECTO)) {
+    const select = selectores[clave];
+    const valor = guardado.filtros[clave];
+    if (!select || typeof valor !== "string") continue;
+
+    const existe = Array.from(select.options).some((op) => op.value === valor);
+    if (existe) {
+      select.value = valor;
+      filtrosActivos[clave] = valor;
+    }
+  }
+}
+
+function volvioPorHistorial() {
+  const entradas = performance.getEntriesByType("navigation");
+  return entradas.length > 0 && entradas[0].type === "back_forward";
+}
+
+function aplicarScrollPendiente() {
+  if (scrollPendiente === null) return;
+  const y = scrollPendiente;
+  scrollPendiente = null;
+  requestAnimationFrame(() => window.scrollTo({ top: y, behavior: "auto" }));
+}
+
+function textoFiltro(clave, valor) {
+  if (clave === "categoria") return `Categoría: ${valor}`;
+  if (clave === "sector") return `Sector: ${valor}`;
+  return `Calificación: ${valor} o más`;
+}
+
+function restablecerFiltro(clave) {
+  filtrosActivos[clave] = FILTROS_POR_DEFECTO[clave];
+  if (selectores[clave]) selectores[clave].value = FILTROS_POR_DEFECTO[clave];
+}
+
+function limpiarFiltros() {
+  for (const clave of Object.keys(FILTROS_POR_DEFECTO)) {
+    restablecerFiltro(clave);
+  }
+  aplicarFiltros();
+}
+
+function actualizarFiltrosActivos() {
+  const activos = Object.keys(FILTROS_POR_DEFECTO).filter(
+    (clave) => filtrosActivos[clave] !== FILTROS_POR_DEFECTO[clave]
+  );
+
+  for (const clave of Object.keys(selectores)) {
+    if (selectores[clave]) {
+      selectores[clave].classList.toggle("filtro--activo", activos.includes(clave));
+    }
+  }
+
+  if (!contenedorFiltros) return;
+
+  const total = lugaresFiltrados.length;
+  const textoLugares = total === 1 ? "1 lugar" : `${total} lugares`;
+  const textoFiltros =
+    activos.length === 0
+      ? "Sin filtros activos"
+      : activos.length === 1
+        ? "1 filtro activo"
+        : `${activos.length} filtros activos`;
+
+  const resumen = document.createElement("p");
+  resumen.className = "filtros-activos__resumen";
+  resumen.textContent = `${textoFiltros} · ${textoLugares}`;
+  contenedorFiltros.replaceChildren(resumen);
+
+  if (activos.length === 0) return;
+
+  const lista = document.createElement("ul");
+  lista.className = "filtros-activos__lista";
+
+  for (const clave of activos) {
+    const etiqueta = textoFiltro(clave, filtrosActivos[clave]);
+
+    const item = document.createElement("li");
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "filtros-activos__chip";
+    chip.textContent = `${etiqueta} ✕`;
+    chip.setAttribute("aria-label", `Quitar filtro ${etiqueta}`);
+    chip.addEventListener("click", () => {
+      restablecerFiltro(clave);
+      aplicarFiltros();
+      if (selectores[clave]) selectores[clave].focus();
+    });
+
+    item.appendChild(chip);
+    lista.appendChild(item);
+  }
+
+  const limpiar = document.createElement("button");
+  limpiar.type = "button";
+  limpiar.className = "filtros-activos__limpiar";
+  limpiar.textContent = "Limpiar filtros";
+  limpiar.addEventListener("click", limpiarFiltros);
+
+  contenedorFiltros.append(lista, limpiar);
+}
 
 async function pedirJSON(url) {
   const controlador = new AbortController();
@@ -67,25 +223,25 @@ function normalizarLugar(crudo) {
   };
 }
 
-function aplicarFiltros() {
+function aplicarFiltros(paginaDeseada = 1) {
   let resultado = [...todosLosLugares];
 
   if (filtrosActivos.categoria !== "todas") {
-    resultado = resultado.filter(lugar => 
+    resultado = resultado.filter(lugar =>
       lugar.categoria.toLowerCase() === filtrosActivos.categoria.toLowerCase()
     );
   }
 
   if (filtrosActivos.sector !== "todos") {
     const sectoresPrincipales = ["temuco", "padre las casas", "labranza", "cholchol", "vilcún", "vilcun"];
-    
+
     if (filtrosActivos.sector === "Otros sectores rurales") {
       resultado = resultado.filter(lugar => {
         const sec = lugar.sector.toLowerCase();
         return sec === "otros sectores rurales" || !sectoresPrincipales.includes(sec);
       });
     } else {
-      resultado = resultado.filter(lugar => 
+      resultado = resultado.filter(lugar =>
         lugar.sector.toLowerCase() === filtrosActivos.sector.toLowerCase()
       );
     }
@@ -93,17 +249,18 @@ function aplicarFiltros() {
 
   if (filtrosActivos.calificacion !== "todas") {
     const califMinima = parseFloat(filtrosActivos.calificacion);
-    resultado = resultado.filter(lugar => 
+    resultado = resultado.filter(lugar =>
       (lugar.calificacion || 0) >= califMinima
     );
   }
 
   lugaresFiltrados = resultado;
-
-  paginaActual = 1;
   totalPaginas = Math.max(1, Math.ceil(lugaresFiltrados.length / LIMITE));
+  paginaActual = Math.min(Math.max(1, paginaDeseada), totalPaginas);
 
   mostrarPaginaActual();
+  actualizarFiltrosActivos();
+  guardarEstado();
 }
 
 function mostrarPaginaActual() {
@@ -316,7 +473,14 @@ function mostrarVacio() {
 
   const mensaje = document.createElement("p");
   mensaje.textContent = "No se encontraron lugares con los filtros seleccionados.";
-  estado.append(mensaje);
+
+  const limpiar = document.createElement("button");
+  limpiar.type = "button";
+  limpiar.className = "catalogo-reintentar";
+  limpiar.textContent = "Limpiar filtros";
+  limpiar.addEventListener("click", limpiarFiltros);
+
+  estado.append(mensaje, limpiar);
 }
 
 function mostrarExito(lugares) {
@@ -343,6 +507,7 @@ function cambiarPagina(nuevaPagina) {
         : "smooth",
     });
     mostrarPaginaActual();
+    guardarEstado();
   }
 }
 
@@ -351,39 +516,67 @@ async function cargarCatalogo() {
   try {
     const respuesta = await pedirJSON(API_URL);
     if (!respuesta.ok) throw new Error(`Error en el servidor (${respuesta.status})`);
-    
+
     const datos = await respuesta.json();
     todosLosLugares = datos.map(normalizarLugar).filter(Boolean);
 
-    aplicarFiltros();
+    let paginaInicial = 1;
+    if (!estadoRestaurado) {
+      estadoRestaurado = true;
+      const guardado = leerEstadoGuardado();
+      if (guardado) {
+        restaurarFiltrosGuardados(guardado);
+        paginaInicial = Number.isInteger(guardado.pagina) ? guardado.pagina : 1;
+        const volvio = guardado.desdeFicha === true || volvioPorHistorial();
+        if (volvio && Number.isFinite(guardado.scrollY)) {
+          scrollPendiente = guardado.scrollY;
+        }
+      }
+    }
+
+    datosCargados = true;
+    aplicarFiltros(paginaInicial);
+    aplicarScrollPendiente();
   } catch (error) {
     console.error("Error al cargar lugares:", error);
     mostrarError(error.message, cargarCatalogo);
   }
 }
 
-if (selectorCategoria) {
-  selectorCategoria.addEventListener("change", (e) => {
-    filtrosActivos.categoria = e.target.value;
-    aplicarFiltros();
-  });
-}
-
-if (selectorSector) {
-  selectorSector.addEventListener("change", (e) => {
-    filtrosActivos.sector = e.target.value;
-    aplicarFiltros();
-  });
-}
-
-if (selectorCalificacion) {
-  selectorCalificacion.addEventListener("change", (e) => {
-    filtrosActivos.calificacion = e.target.value;
+for (const clave of Object.keys(selectores)) {
+  const select = selectores[clave];
+  if (!select) continue;
+  select.addEventListener("change", (e) => {
+    filtrosActivos[clave] = e.target.value;
     aplicarFiltros();
   });
 }
 
 btnAnterior.addEventListener("click", () => cambiarPagina(paginaActual - 1));
 btnSiguiente.addEventListener("click", () => cambiarPagina(paginaActual + 1));
+
+grid.addEventListener("click", (e) => {
+  const enlace = e.target.closest(".boton__vermas");
+  if (!enlace) return;
+  saliendoAFicha = true;
+  guardarEstado();
+});
+
+window.addEventListener("pagehide", guardarEstado);
+
+function marcarRegreso() {
+  saliendoAFicha = false;
+  guardarEstado();
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") marcarRegreso();
+});
+window.addEventListener("pageshow", (e) => {
+  if (e.persisted) marcarRegreso();
+});
+
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
 
 cargarCatalogo();
