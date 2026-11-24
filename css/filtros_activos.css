@@ -1,0 +1,71 @@
+.nav__2 select.filtro--activo {
+    background-color: #1A2A23;
+    border-color: #E1ECE7;
+    box-shadow: 0 0 0 3px #3A6B56, 0 0 0 5px #1F7A4D;
+}
+
+.filtros-activos {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px 12px;
+}
+
+.filtros-activos__resumen {
+    width: 100%;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2B5441;
+}
+
+.filtros-activos__lista {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    list-style: none;
+}
+
+.filtros-activos__chip {
+    padding: 6px 14px;
+    border: 1px solid #1F7A4D;
+    border-radius: 999px;
+    background-color: #D5E5DD;
+    color: #1A2A23;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.filtros-activos__chip:hover,
+.filtros-activos__chip:focus-visible {
+    background-color: #C3D6CA;
+}
+
+.filtros-activos__limpiar {
+    padding: 6px 4px;
+    border: none;
+    background: none;
+    color: #2B5441;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.filtros-activos__limpiar:hover,
+.filtros-activos__limpiar:focus-visible {
+    color: #1A2A23;
+}
+
+.filtros-activos__chip:focus-visible,
+.filtros-activos__limpiar:focus-visible,
+.nav__2 select:focus-visible {
+    outline: 3px solid #1A2A23;
+    outline-offset: 2px;
+}
