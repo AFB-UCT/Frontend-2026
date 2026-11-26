@@ -1,0 +1,279 @@
+/* ===== Base (igual que style_index.css) ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.4;
+    background-color: #F2F8F6;
+    color: #1A2A23;
+}
+
+header {
+    width: 100%;
+    min-height: 90px;
+    background-color: #3A6B56;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header a {
+    text-decoration: none;
+    color: #E1ECE7;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+nav {
+    width: 100%;
+    background-color: #3A6B56;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.navegacion__buscador {
+    width: 90%;
+    max-width: 800px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.nav__l {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    max-width: 1200px;
+    width: 100%;
+    padding: 10px;
+}
+
+.nav__l a {
+    text-align: center;
+    text-decoration: none;
+    color: #1A2A23;
+    background-color: #E1ECE7;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.nav__l a:hover {
+    background-color: #dbfcee;
+}
+
+main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+footer {
+    width: 100%;
+    background-color: #F2F8F6;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 50px;
+}
+
+footer h4 {
+    color: #2B5441;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.copy {
+    width: 100%;
+    background-color: #1A2A23;
+    text-align: center;
+    color: #E1ECE7;
+    padding: 15px;
+    font-size: 0.9rem;
+}
+
+/* ===== Recomendados ===== */
+.recomendados__contenedor {
+    width: 90%;
+    max-width: 1200px;
+    margin: 70px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.recomendados__titulo {
+    font-size: 2rem;
+    color: #1A2A23;
+    text-align: center;
+}
+
+.recomendados__grid {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.recomendado-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    width: 100%;
+    align-items: stretch;
+}
+
+/* Carta de imagen */
+.lugar-card {
+    width: 100%;
+    background-color: #D5E5DD;
+    border: 1px solid #1F7A4D;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.lugar-card img {
+    display: block;
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.lugar-card__info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+/* Botón de ruta */
+.btn-ruta {
+    width: 100%;
+    padding: 10px;
+    background-color: #2B5441;
+    color: white;
+    border: 1px solid #1A2A23;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.3s ease;
+}
+
+.btn-ruta:hover {
+    background-color: #1F7A4D;
+    transform: translateY(-3px);
+}
+
+/* Información del lugar */
+.lugar-aside {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    min-width: 0;
+}
+
+.lugar-aside h3 {
+    color: #1A2A23;
+    font-size: 1.8rem;
+    font-weight: 750;
+    text-align: center;
+}
+
+.lugar-descripcion {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    text-align: center;
+    color: #1A2A23;
+}
+
+/* Calificación */
+.lugar-calificacion {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.calificacion-valor {
+    color: #1A2A23;
+    font-size: 0.95rem;
+}
+
+.calificacion-estrella {
+    color: #FFE600;
+    font-size: 2rem;
+}
+
+/* Dirección */
+.lugar-direccion {
+    padding: 15px;
+    text-align: center;
+    width: 100%;
+    font-size: 1rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+/* Estados de carga y errores */
+.estado-carga,
+.estado-error,
+.estado-vacio {
+    width: 100%;
+    text-align: center;
+    padding: 25px;
+    color: #1A2A23;
+    background-color: white;
+    border-radius: 10px;
+}
+
+/* ===== Responsive (mismo breakpoint que index) ===== */
+@media (max-width: 900px) {
+    .recomendado-item {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .lugar-card img {
+        height: 320px;
+    }
+
+    .lugar-aside {
+        padding: 10px 0;
+    }
+
+    .lugar-aside h3 {
+        font-size: 1.5rem;
+    }
+
+    .lugar-descripcion {
+        font-size: 1rem;
+    }
+
+    .recomendados__titulo {
+        font-size: 1.6rem;
+    }
+}

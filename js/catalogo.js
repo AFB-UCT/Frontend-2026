@@ -2,7 +2,15 @@ const API_URL = "https://6ad7dc9f95e98f36aef2d123.mockapi.io/api/v1/lugares";
 const LIMITE = 6;
 const TIEMPO_MAXIMO_MS = 10000;
 const IMAGEN_RESPALDO = "../assets/imagenes/Temuco-paisaje-1.webp";
-const ICONO_ERROR = '<svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+const ICONO_ERROR ='<svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+const CLAVE_ESTADO = "ecoruta:catalogo:estado";
+const VERSION_ESTADO = 1;
+const FILTROS_POR_DEFECTO = {
+  categoria: "todas",
+  sector: "todos",
+  calificacion: "todas"
+};
+
 const grid = document.getElementById("catalogo-grid");
 const estado = document.getElementById("catalogo-estado");
 const btnAnterior = document.getElementById("pagina-anterior");
@@ -13,82 +21,169 @@ const contador = document.getElementById("catalogo-contador");
 const selectorCategoria = document.getElementById("filtro-categoria");
 const selectorSector = document.getElementById("filtro-sector");
 const selectorCalificacion = document.getElementById("filtro-calificacion");
+const contenedorFiltros = document.getElementById("filtros-activos");
+
+const selectores = {
+  categoria: selectorCategoria,
+  sector: selectorSector,
+  calificacion: selectorCalificacion
+};
+
 let todosLosLugares = [];
 let lugaresFiltrados = [];
 let paginaActual = 1;
 let totalPaginas = 1;
-const filtrosActivos = {
-    categoria: "todas",
-    sector: "todos",
-    calificacion: "todas",
-    soloFavoritos: false
-};
-const CLAVE_FAVORITOS = "ecolugares_favoritos";
-function leerFavoritos() {
-    try {
-        const raw = localStorage.getItem(CLAVE_FAVORITOS);
-        const datos = raw ? JSON.parse(raw) : [];
-        return Array.isArray(datos)
-            ? datos.filter((x) => typeof x === "string")
-            : [];
-    }
-    catch {
-        return [];
-    }
-}
-function guardarFavoritos(lista) {
-    try {
-        localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(lista));
-    }
-    catch {
-        // almacenamiento lleno o bloqueado: no rompemos la página
-    }
-}
-function esFavorito(id) {
-    return leerFavoritos().includes(id);
-}
-function pintarBoton(btn, activo) {
-    btn.classList.toggle("btn-fav--activo", activo);
-    btn.textContent = activo ? "♥" : "♡";
-    btn.setAttribute("aria-pressed", String(activo));
-    btn.setAttribute("aria-label", activo ? "Quitar de favoritos" : "Marcar como favorito");
-    btn.title = activo ? "Quitar de favoritos" : "Marcar como favorito";
-    btn.closest(".tarjeta")?.classList.toggle("tarjeta--favorita", activo);
-}
-function actualizarContador() {
-    if (!contador)
-        return;
-    const filtros = filtrosActivos.categoria !== "todas" ||
-        filtrosActivos.sector !== "todos" ||
-        filtrosActivos.calificacion !== "todas" ||
-        filtrosActivos.soloFavoritos;
-    contador.textContent =
-        `${filtros ? "Filtros activos" : "Sin filtros activos"} · ${lugaresFiltrados.length} lugares · ♥ ${leerFavoritos().length} favoritos`;
-}
-function toggleFavorito(id) {
-    const favs = leerFavoritos();
-    const i = favs.indexOf(id);
-    const agregado = i === -1;
-    if (agregado)
-        favs.push(id);
-    else
-        favs.splice(i, 1);
-    guardarFavoritos(favs);
-    if (filtrosActivos.soloFavoritos) {
-        // la tarjeta debe desaparecer de la lista: re-filtramos sin saltar de página
-        aplicarFiltros(true);
-    }
-    else {
-        grid?.querySelectorAll(".btn-fav").forEach((btn) => {
-            if (btn.dataset.id === id)
-                pintarBoton(btn, agregado);
-        });
-        actualizarContador();
-    }
-    mostrarAvisoExito(agregado ? "♥ Agregado a favoritos" : "♡ Quitado de favoritos");
-}
+
+const filtrosActivos = { ...FILTROS_POR_DEFECTO };
+
+let datosCargados = false;
+let estadoRestaurado = false;
+let scrollPendiente = null;
+let saliendoAFicha = false;
+
 let avisoExito = null;
 let avisoTemporizador = null;
+
+function guardarEstado() {
+  if (!datosCargados) return;
+  try {
+    sessionStorage.setItem(
+      CLAVE_ESTADO,
+      JSON.stringify({
+        version: VERSION_ESTADO,
+        filtros: { ...filtrosActivos },
+        pagina: paginaActual,
+        scrollY: Math.round(window.scrollY),
+        desdeFicha: saliendoAFicha
+      })
+    );
+  } catch (error) {
+  }
+}
+
+function leerEstadoGuardado() {
+  try {
+    const crudo = sessionStorage.getItem(CLAVE_ESTADO);
+    if (!crudo) return null;
+    const guardado = JSON.parse(crudo);
+    if (
+      !guardado ||
+      guardado.version !== VERSION_ESTADO ||
+      typeof guardado.filtros !== "object" ||
+      guardado.filtros === null
+    ) {
+      return null;
+    }
+    return guardado;
+  } catch (error) {
+    return null;
+  }
+}
+
+function restaurarFiltrosGuardados(guardado) {
+  for (const clave of Object.keys(FILTROS_POR_DEFECTO)) {
+    const select = selectores[clave];
+    const valor = guardado.filtros[clave];
+    if (!select || typeof valor !== "string") continue;
+
+    const existe = Array.from(select.options).some((op) => op.value === valor);
+    if (existe) {
+      select.value = valor;
+      filtrosActivos[clave] = valor;
+    }
+  }
+}
+
+function volvioPorHistorial() {
+  const entradas = performance.getEntriesByType("navigation");
+  return entradas.length > 0 && entradas[0].type === "back_forward";
+}
+
+function aplicarScrollPendiente() {
+  if (scrollPendiente === null) return;
+  const y = scrollPendiente;
+  scrollPendiente = null;
+  requestAnimationFrame(() => window.scrollTo({ top: y, behavior: "auto" }));
+}
+
+function textoFiltro(clave, valor) {
+  if (clave === "categoria") return `Categoría: ${valor}`;
+  if (clave === "sector") return `Sector: ${valor}`;
+  return `Calificación: ${valor} o más`;
+}
+
+function restablecerFiltro(clave) {
+  filtrosActivos[clave] = FILTROS_POR_DEFECTO[clave];
+  if (selectores[clave]) selectores[clave].value = FILTROS_POR_DEFECTO[clave];
+}
+
+function limpiarFiltros() {
+  for (const clave of Object.keys(FILTROS_POR_DEFECTO)) {
+    restablecerFiltro(clave);
+  }
+  aplicarFiltros();
+}
+
+function actualizarFiltrosActivos() {
+  const activos = Object.keys(FILTROS_POR_DEFECTO).filter(
+    (clave) => filtrosActivos[clave] !== FILTROS_POR_DEFECTO[clave]
+  );
+
+  for (const clave of Object.keys(selectores)) {
+    if (selectores[clave]) {
+      selectores[clave].classList.toggle("filtro--activo", activos.includes(clave));
+    }
+  }
+
+  if (!contenedorFiltros) return;
+
+  const total = lugaresFiltrados.length;
+  const textoLugares = total === 1 ? "1 lugar" : `${total} lugares`;
+  const textoFiltros =
+    activos.length === 0
+      ? "Sin filtros activos"
+      : activos.length === 1
+        ? "1 filtro activo"
+        : `${activos.length} filtros activos`;
+
+  const resumen = document.createElement("p");
+  resumen.className = "filtros-activos__resumen";
+  resumen.textContent = `${textoFiltros} · ${textoLugares}`;
+  contenedorFiltros.replaceChildren(resumen);
+
+  if (activos.length === 0) return;
+
+  const lista = document.createElement("ul");
+  lista.className = "filtros-activos__lista";
+
+  for (const clave of activos) {
+    const etiqueta = textoFiltro(clave, filtrosActivos[clave]);
+
+    const item = document.createElement("li");
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "filtros-activos__chip";
+    chip.textContent = `${etiqueta} ✕`;
+    chip.setAttribute("aria-label", `Quitar filtro ${etiqueta}`);
+    chip.addEventListener("click", () => {
+      restablecerFiltro(clave);
+      aplicarFiltros();
+      if (selectores[clave]) selectores[clave].focus();
+    });
+
+    item.appendChild(chip);
+    lista.appendChild(item);
+  }
+
+  const limpiar = document.createElement("button");
+  limpiar.type = "button";
+  limpiar.className = "filtros-activos__limpiar";
+  limpiar.textContent = "Limpiar filtros";
+  limpiar.addEventListener("click", limpiarFiltros);
+
+  contenedorFiltros.append(lista, limpiar);
+}
+
 async function pedirJSON(url) {
     const controlador = new AbortController();
     const reloj = setTimeout(() => controlador.abort(), TIEMPO_MAXIMO_MS);
@@ -128,44 +223,45 @@ function normalizarLugar(crudo) {
         imagen: /^(https?:\/\/|\.{0,2}\/)/i.test(imagen) ? imagen : IMAGEN_RESPALDO,
     };
 }
-function aplicarFiltros(conservarPagina = false) {
-    let resultado = [...todosLosLugares];
-    if (filtrosActivos.categoria !== "todas") {
-        resultado = resultado.filter((lugar) => lugar.categoria.toLowerCase().trim() ===
-            filtrosActivos.categoria.toLowerCase().trim());
+
+function aplicarFiltros(paginaDeseada = 1) {
+  let resultado = [...todosLosLugares];
+
+  if (filtrosActivos.categoria !== "todas") {
+    resultado = resultado.filter(lugar =>
+      lugar.categoria.toLowerCase() === filtrosActivos.categoria.toLowerCase()
+    );
+  }
+
+  if (filtrosActivos.sector !== "todos") {
+    const sectoresPrincipales = ["temuco", "padre las casas", "labranza", "cholchol", "vilcún", "vilcun"];
+
+    if (filtrosActivos.sector === "Otros sectores rurales") {
+      resultado = resultado.filter(lugar => {
+        const sec = lugar.sector.toLowerCase();
+        return sec === "otros sectores rurales" || !sectoresPrincipales.includes(sec);
+      });
+    } else {
+      resultado = resultado.filter(lugar =>
+        lugar.sector.toLowerCase() === filtrosActivos.sector.toLowerCase()
+      );
     }
-    if (filtrosActivos.sector !== "todos") {
-        const sectoresPrincipales = [
-            "temuco",
-            "padre las casas",
-            "labranza",
-            "cholchol",
-            "vilcún",
-            "vilcun"
-        ];
-        if (filtrosActivos.sector === "Otros sectores rurales") {
-            resultado = resultado.filter((lugar) => {
-                const sec = lugar.sector.toLowerCase();
-                return (sec === "otros sectores rurales" || !sectoresPrincipales.includes(sec));
-            });
-        }
-        else {
-            resultado = resultado.filter((lugar) => lugar.sector.toLowerCase() === filtrosActivos.sector.toLowerCase());
-        }
-    }
-    if (filtrosActivos.calificacion !== "todas") {
-        const califMinima = parseFloat(filtrosActivos.calificacion);
-        resultado = resultado.filter((lugar) => (lugar.calificacion || 0) >= califMinima);
-    }
-    if (filtrosActivos.soloFavoritos) {
-        const favs = leerFavoritos();
-        resultado = resultado.filter((lugar) => favs.includes(lugar.id));
-    }
-    lugaresFiltrados = resultado;
-    totalPaginas = Math.max(1, Math.ceil(lugaresFiltrados.length / LIMITE));
-    paginaActual = conservarPagina ? Math.min(paginaActual, totalPaginas) : 1;
-    actualizarContador();
-    mostrarPaginaActual();
+  }
+
+  if (filtrosActivos.calificacion !== "todas") {
+    const califMinima = parseFloat(filtrosActivos.calificacion);
+    resultado = resultado.filter(lugar =>
+      (lugar.calificacion || 0) >= califMinima
+    );
+  }
+
+  lugaresFiltrados = resultado;
+  totalPaginas = Math.max(1, Math.ceil(lugaresFiltrados.length / LIMITE));
+  paginaActual = Math.min(Math.max(1, paginaDeseada), totalPaginas);
+
+  mostrarPaginaActual();
+  actualizarFiltrosActivos();
+  guardarEstado();
 }
 function mostrarPaginaActual() {
     if (lugaresFiltrados.length === 0) {
@@ -346,19 +442,23 @@ function mostrarError(mensajeError, reintento) {
     estado.append(icono, titulo, detalle, boton);
 }
 function mostrarVacio() {
-    if (!grid || !estado)
-        return;
-    grid.hidden = true;
-    grid.replaceChildren();
-    estado.hidden = false;
-    estado.className = "catalogo-estado";
-    estado.setAttribute("role", "status");
-    estado.replaceChildren();
-    const mensaje = document.createElement("p");
-    mensaje.textContent = filtrosActivos.soloFavoritos
-        ? "Aún no tienes lugares favoritos con estos filtros. Marca alguno con ♡."
-        : "No se encontraron lugares con los filtros seleccionados.";
-    estado.append(mensaje);
+  grid.hidden = true;
+  grid.replaceChildren();
+  estado.hidden = false;
+  estado.className = "catalogo-estado";
+  estado.setAttribute("role", "status");
+  estado.replaceChildren();
+
+  const mensaje = document.createElement("p");
+  mensaje.textContent = "No se encontraron lugares con los filtros seleccionados.";
+
+  const limpiar = document.createElement("button");
+  limpiar.type = "button";
+  limpiar.className = "catalogo-reintentar";
+  limpiar.textContent = "Limpiar filtros";
+  limpiar.addEventListener("click", limpiarFiltros);
+
+  estado.append(mensaje, limpiar);
 }
 function mostrarExito(lugares) {
     if (!estado || !grid)
@@ -379,66 +479,83 @@ function actualizarPaginacion() {
     }
 }
 function cambiarPagina(nuevaPagina) {
-    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-        paginaActual = nuevaPagina;
-        document.querySelector(".catalogo")?.scrollIntoView({
-            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                ? "auto"
-                : "smooth",
-        });
-        mostrarPaginaActual();
-    }
+  if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+    paginaActual = nuevaPagina;
+    document.querySelector(".catalogo").scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+    mostrarPaginaActual();
+    guardarEstado();
+  }
 }
 async function cargarCatalogo() {
-    mostrarCargando();
-    try {
-        const respuesta = await pedirJSON(API_URL);
-        if (!respuesta.ok)
-            throw new Error(`Error en el servidor (${respuesta.status})`);
-        const datos = await respuesta.json();
-        if (!Array.isArray(datos)) {
-            throw new Error("La API no devolvió una lista válida.");
+  mostrarCargando();
+  try {
+    const respuesta = await pedirJSON(API_URL);
+    if (!respuesta.ok) throw new Error(`Error en el servidor (${respuesta.status})`);
+
+    const datos = await respuesta.json();
+    todosLosLugares = datos.map(normalizarLugar).filter(Boolean);
+
+    let paginaInicial = 1;
+    if (!estadoRestaurado) {
+      estadoRestaurado = true;
+      const guardado = leerEstadoGuardado();
+      if (guardado) {
+        restaurarFiltrosGuardados(guardado);
+        paginaInicial = Number.isInteger(guardado.pagina) ? guardado.pagina : 1;
+        const volvio = guardado.desdeFicha === true || volvioPorHistorial();
+        if (volvio && Number.isFinite(guardado.scrollY)) {
+          scrollPendiente = guardado.scrollY;
         }
-        todosLosLugares = datos.map(normalizarLugar).filter((l) => l !== null);
-        aplicarFiltros();
+      }
     }
-    catch (error) {
-        const msg = error instanceof Error ? error.message : "Error desconocido";
-        mostrarError(msg, cargarCatalogo);
-    }
+
+    datosCargados = true;
+    aplicarFiltros(paginaInicial);
+    aplicarScrollPendiente();
+  } catch (error) {
+    console.error("Error al cargar lugares:", error);
+    mostrarError(error.message, cargarCatalogo);
+  }
 }
-if (selectorCategoria) {
-    selectorCategoria.addEventListener("change", (e) => {
-        const target = e.target;
-        filtrosActivos.categoria = target.value;
-        aplicarFiltros();
-    });
-}
-if (selectorSector) {
-    selectorSector.addEventListener("change", (e) => {
-        const target = e.target;
-        filtrosActivos.sector = target.value;
-        aplicarFiltros();
-    });
-}
-if (selectorCalificacion) {
-    selectorCalificacion.addEventListener("change", (e) => {
-        const target = e.target;
-        filtrosActivos.calificacion = target.value;
-        aplicarFiltros();
-    });
-}
-chkSoloFavoritos?.addEventListener("change", () => {
-    filtrosActivos.soloFavoritos = chkSoloFavoritos.checked;
+
+for (const clave of Object.keys(selectores)) {
+  const select = selectores[clave];
+  if (!select) continue;
+  select.addEventListener("change", (e) => {
+    filtrosActivos[clave] = e.target.value;
     aplicarFiltros();
+  });
+}
+
+btnAnterior.addEventListener("click", () => cambiarPagina(paginaActual - 1));
+btnSiguiente.addEventListener("click", () => cambiarPagina(paginaActual + 1));
+
+grid.addEventListener("click", (e) => {
+  const enlace = e.target.closest(".boton__vermas");
+  if (!enlace) return;
+  saliendoAFicha = true;
+  guardarEstado();
 });
-// Delegación: sigue funcionando aunque se re-rendericen las tarjetas
-grid?.addEventListener("click", (e) => {
-    const btn = e.target.closest(".btn-fav");
-    if (btn?.dataset.id)
-        toggleFavorito(btn.dataset.id);
+
+window.addEventListener("pagehide", guardarEstado);
+
+function marcarRegreso() {
+  saliendoAFicha = false;
+  guardarEstado();
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") marcarRegreso();
 });
-btnAnterior?.addEventListener("click", () => cambiarPagina(paginaActual - 1));
-btnSiguiente?.addEventListener("click", () => cambiarPagina(paginaActual + 1));
+window.addEventListener("pageshow", (e) => {
+  if (e.persisted) marcarRegreso();
+});
+
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
 cargarCatalogo();
-export {};

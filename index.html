@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoLugares - Main</title>
+    <title>EcoRuta</title>
     <link rel="stylesheet" href="./style_index.css">
+    <script src="ts/recomendados.ts" defer></script>
+    <script src="js/recomendados.js" defer></script>
 </head>
 <body>
     <header>
-        <h1><a href="./index.html">EcoLugares</a></h1>
+        <h1><a href="./index.html">EcoRuta</a></h1>
     </header>
 
     <nav>
@@ -17,7 +19,7 @@
             <a href="paginas/horarios.html" aria-label="Ver los horarios de los servicios">Horarios</a>
             <a href="paginas/mapa.html" aria-label="Ver el mapa de rutas y sucursales">Mapa</a>
             <a href="paginas/info.html" aria-label="Ver información sobre la empresa">Información</a>
-            <a href="paginas/recomendados.html" aria-label="Ver los lugares recomendados">Emprendimientos</a>
+            <a href="paginas/emprendimientos.html" aria-label="Ver los lugares recomendados">Emprendimientos</a>
         </div>
     </nav>
 
@@ -45,7 +47,7 @@
             <h3>Sobre EcoRuta</h3>
             <div class="descripcion_contenido">
                 <p>
-                    <b>EcoRuta Temuco</b> EcoRuta Temuco es una plataforma digital gratuita y sin registros que centraliza información sobre rutas accesibles y emprendimientos locales en La Araucanía. Su objetivo es que turistas, familias y personas con movilidad reducida puedan planificar paseos responsables por espacios naturales (como el Cerro Ñielol, Isla Cautín o Vilcún), apoyando directamente a productores, artesanos y guías de la zona. <br>
+                    <b>EcoRuta Temuco</b> es una plataforma digital gratuita y sin registros que centraliza información sobre rutas accesibles y emprendimientos locales en La Araucanía. Su objetivo es que turistas, familias y personas con movilidad reducida puedan planificar paseos responsables por espacios naturales (como el Cerro Ñielol, Isla Cautín o Vilcún), apoyando directamente a productores, artesanos y guías de la zona. <br>
                     <span class="whatsapp-button">
                         <button onclick="window.location.href='https://wa.me/56920189289'">
                             <img src="./assets/iconos/whatsapp.webp" alt="Icono de Whatsapp" width="24" height="24">
@@ -58,6 +60,8 @@
                 </aside>
             </div>
         </section>
+
+
 
         <section class="seccion-explora">
             <h2>Explora</h2>
@@ -85,6 +89,21 @@
                 </div>
             </div>
         </section>
+
+        <section class="recomendados__contenedor">
+
+            <h2 class="recomendados__titulo">
+                Los Favoritos de la Semana
+            </h2>
+
+            <div class="recomendados__grid" id="lista-recomendados">
+
+                <p class="estado-carga">Cargando lugares recomendados...</p>
+
+            </div>
+
+        </section>
+
     </main>
 
     <footer>

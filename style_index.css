@@ -304,10 +304,10 @@ main {
 
 footer {
     width: 100%;
-    padding: 40px 20px;
-    background-color: #E1ECE7;
+    background-color: #F2F8F6;
     text-align: center;
     line-height: 1.6;
+    margin-bottom: 50px;
 }
 
 footer h4 {
@@ -342,4 +342,100 @@ footer h4 {
     .banner {
         height: 50vh;
     }
+}
+
+
+.recomendados__contenedor {
+    width: 90%;
+    margin-top: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 70px;
+}
+
+.recomendados__titulo {
+    font-size: 2rem;
+    color: #1A2A23;
+    text-align: center;
+}
+
+.recomendados__grid {
+    display: grid;
+    grid-template-columns: 1fr ;
+    gap: 25px;
+    width: 100%;
+}
+.lugar-aside{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: justify;
+    gap: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.lugar-aside p{
+    font-weight: 400;
+    font-size: 20px;
+}
+.lugar-aside h3{
+    font-weight: 750;
+    font-size: 30px;
+}
+
+
+.lugar-card {
+    width: auto;
+    height: auto;
+    background-color: #D5E5DD;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    border: 1px solid #1F7A4D;
+}
+
+
+.lugar-card__img-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #E1ECE7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #1A2A23;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.lugar-card__info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn-ruta {
+    padding: 10px;
+    background-color: #2B5441;
+    color: white;
+    border: 1px solid #1A2A23;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-ruta:hover {
+    background-color: #1F7A4D;
+    transform: translateY(-3px);
+}
+.lugar-card img{
+    display: block;
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
 }
