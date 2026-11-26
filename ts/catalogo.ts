@@ -33,6 +33,7 @@ interface FiltrosActivos {
   categoria: string;
   sector: string;
   calificacion: string;
+  soloFavoritos: boolean;
 }
 
 const API_URL: string = "https://6ad7dc9f95e98f36aef2d123.mockapi.io/api/v1/lugares";
@@ -45,6 +46,8 @@ const estado = document.getElementById("catalogo-estado") as HTMLElement | null;
 const btnAnterior = document.getElementById("pagina-anterior") as HTMLButtonElement | null;
 const btnSiguiente = document.getElementById("pagina-siguiente") as HTMLButtonElement | null;
 const indicador = document.getElementById("pagina-indicador") as HTMLElement | null;
+const chkSoloFavoritos = document.getElementById("filtro-favoritos") as HTMLInputElement | null;
+const contador = document.getElementById("catalogo-contador") as HTMLElement | null;
 const selectorCategoria = document.getElementById("filtro-categoria") as HTMLSelectElement | null;
 const selectorSector = document.getElementById("filtro-sector") as HTMLSelectElement | null;
 const selectorCalificacion = document.getElementById("filtro-calificacion") as HTMLSelectElement | null;
@@ -55,8 +58,75 @@ let totalPaginas: number = 1;
 const filtrosActivos: FiltrosActivos = {
   categoria: "todas",
   sector: "todos",
-  calificacion: "todas"
+  calificacion: "todas",
+  soloFavoritos: false
 };
+
+const CLAVE_FAVORITOS: string = "ecolugares_favoritos";
+
+function leerFavoritos(): string[] {
+  try {
+    const raw = localStorage.getItem(CLAVE_FAVORITOS);
+    const datos: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(datos)
+      ? datos.filter((x): x is string => typeof x === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function guardarFavoritos(lista: string[]): void {
+  try {
+    localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(lista));
+  } catch {
+    // almacenamiento lleno o bloqueado: no rompemos la página
+  }
+}
+
+function esFavorito(id: string): boolean {
+  return leerFavoritos().includes(id);
+}
+
+function pintarBoton(btn: HTMLButtonElement, activo: boolean): void {
+  btn.classList.toggle("btn-fav--activo", activo);
+  btn.textContent = activo ? "♥" : "♡";
+  btn.setAttribute("aria-pressed", String(activo));
+  btn.setAttribute("aria-label", activo ? "Quitar de favoritos" : "Marcar como favorito");
+  btn.title = activo ? "Quitar de favoritos" : "Marcar como favorito";
+  btn.closest(".tarjeta")?.classList.toggle("tarjeta--favorita", activo);
+}
+
+function actualizarContador(): void {
+  if (!contador) return;
+  const filtros: boolean =
+    filtrosActivos.categoria !== "todas" ||
+    filtrosActivos.sector !== "todos" ||
+    filtrosActivos.calificacion !== "todas" ||
+    filtrosActivos.soloFavoritos;
+  contador.textContent =
+    `${filtros ? "Filtros activos" : "Sin filtros activos"} · ${lugaresFiltrados.length} lugares · ♥ ${leerFavoritos().length} favoritos`;
+}
+
+function toggleFavorito(id: string): void {
+  const favs = leerFavoritos();
+  const i = favs.indexOf(id);
+  const agregado = i === -1;
+  if (agregado) favs.push(id);
+  else favs.splice(i, 1);
+  guardarFavoritos(favs);
+
+  if (filtrosActivos.soloFavoritos) {
+    // la tarjeta debe desaparecer de la lista: re-filtramos sin saltar de página
+    aplicarFiltros(true);
+  } else {
+    grid?.querySelectorAll<HTMLButtonElement>(".btn-fav").forEach((btn) => {
+      if (btn.dataset.id === id) pintarBoton(btn, agregado);
+    });
+    actualizarContador();
+  }
+  mostrarAvisoExito(agregado ? "♥ Agregado a favoritos" : "♡ Quitado de favoritos");
+}
 
 let avisoExito: HTMLDivElement | null = null;
 let avisoTemporizador: ReturnType<typeof setTimeout> | null = null;
@@ -103,7 +173,7 @@ function normalizarLugar(crudo: unknown): Lugar | null {
   };
 }
 
-function aplicarFiltros(): void {
+function aplicarFiltros(conservarPagina: boolean = false): void {
   let resultado: Lugar[] = [...todosLosLugares];
 
   if (filtrosActivos.categoria !== "todas") {
@@ -146,9 +216,15 @@ function aplicarFiltros(): void {
     );
   }
 
+  if (filtrosActivos.soloFavoritos) {
+    const favs = leerFavoritos();
+    resultado = resultado.filter((lugar) => favs.includes(lugar.id));
+  }
+
   lugaresFiltrados = resultado;
-  paginaActual = 1;
   totalPaginas = Math.max(1, Math.ceil(lugaresFiltrados.length / LIMITE));
+  paginaActual = conservarPagina ? Math.min(paginaActual, totalPaginas) : 1;
+  actualizarContador();
 
   mostrarPaginaActual();
 }
@@ -233,6 +309,17 @@ function crearTarjeta(lugar: Lugar): HTMLDivElement {
   contenedorTxt.appendChild(verMas);
 
   tarjeta.append(contenedorImg, contenedorTxt);
+
+  if (lugar.id) {
+    const btnFav = document.createElement("button");
+    btnFav.type = "button";
+    btnFav.className = "btn-fav";
+    btnFav.dataset.id = lugar.id;
+    pintarBoton(btnFav, false);
+    tarjeta.appendChild(btnFav);
+    pintarBoton(btnFav, esFavorito(lugar.id));
+  }
+
   return tarjeta;
 }
 
@@ -366,7 +453,9 @@ function mostrarVacio(): void {
   estado.replaceChildren();
 
   const mensaje = document.createElement("p");
-  mensaje.textContent = "No se encontraron lugares con los filtros seleccionados.";
+  mensaje.textContent = filtrosActivos.soloFavoritos
+    ? "Aún no tienes lugares favoritos con estos filtros. Marca alguno con ♡."
+    : "No se encontraron lugares con los filtros seleccionados.";
   estado.append(mensaje);
 }
 
@@ -443,6 +532,17 @@ if (selectorCalificacion) {
     aplicarFiltros();
   });
 }
+
+chkSoloFavoritos?.addEventListener("change", () => {
+  filtrosActivos.soloFavoritos = chkSoloFavoritos.checked;
+  aplicarFiltros();
+});
+
+// Delegación: sigue funcionando aunque se re-rendericen las tarjetas
+grid?.addEventListener("click", (e: MouseEvent) => {
+  const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(".btn-fav");
+  if (btn?.dataset.id) toggleFavorito(btn.dataset.id);
+});
 
 btnAnterior?.addEventListener("click", () => cambiarPagina(paginaActual - 1));
 btnSiguiente?.addEventListener("click", () => cambiarPagina(paginaActual + 1));
