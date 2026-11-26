@@ -1,4 +1,4 @@
-export {}; // Evita el error de funciones duplicadas con otros archivos
+export {};
 
 interface LugarRaw {
   id?: string;
@@ -33,6 +33,17 @@ interface FiltrosActivos {
   categoria: string;
   sector: string;
   calificacion: string;
+  soloFavoritos: boolean;
+}
+
+type ClaveFiltroSelect = "categoria" | "sector" | "calificacion";
+
+interface EstadoGuardado {
+  version: number;
+  filtros: FiltrosActivos;
+  pagina: number;
+  scrollY: number;
+  desdeFicha: boolean;
 }
 
 const API_URL: string = "https://6ad7dc9f95e98f36aef2d123.mockapi.io/api/v1/lugares";
@@ -40,26 +51,265 @@ const LIMITE: number = 6;
 const TIEMPO_MAXIMO_MS: number = 10000;
 const IMAGEN_RESPALDO: string = "../assets/imagenes/Temuco-paisaje-1.webp";
 const ICONO_ERROR: string = '<svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+const CLAVE_ESTADO: string = "ecoruta:catalogo:estado";
+const CLAVE_FAVORITOS: string = "ecoruta:catalogo:favoritos";
+const VERSION_ESTADO: number = 1;
+const FILTROS_POR_DEFECTO: FiltrosActivos = {
+  categoria: "todas",
+  sector: "todos",
+  calificacion: "todas",
+  soloFavoritos: false
+};
+const CLAVES_FILTRO: ClaveFiltroSelect[] = ["categoria", "sector", "calificacion"];
+
 const grid = document.getElementById("catalogo-grid") as HTMLElement | null;
 const estado = document.getElementById("catalogo-estado") as HTMLElement | null;
 const btnAnterior = document.getElementById("pagina-anterior") as HTMLButtonElement | null;
 const btnSiguiente = document.getElementById("pagina-siguiente") as HTMLButtonElement | null;
 const indicador = document.getElementById("pagina-indicador") as HTMLElement | null;
+const chkSoloFavoritos = document.getElementById("filtro-favoritos") as HTMLInputElement | null;
 const selectorCategoria = document.getElementById("filtro-categoria") as HTMLSelectElement | null;
 const selectorSector = document.getElementById("filtro-sector") as HTMLSelectElement | null;
 const selectorCalificacion = document.getElementById("filtro-calificacion") as HTMLSelectElement | null;
+const contenedorFiltros = document.getElementById("filtros-activos") as HTMLElement | null;
+
+const selectores: Record<ClaveFiltroSelect, HTMLSelectElement | null> = {
+  categoria: selectorCategoria,
+  sector: selectorSector,
+  calificacion: selectorCalificacion
+};
+
 let todosLosLugares: Lugar[] = [];
 let lugaresFiltrados: Lugar[] = [];
 let paginaActual: number = 1;
 let totalPaginas: number = 1;
-const filtrosActivos: FiltrosActivos = {
-  categoria: "todas",
-  sector: "todos",
-  calificacion: "todas"
-};
 
+const filtrosActivos: FiltrosActivos = { ...FILTROS_POR_DEFECTO };
+
+let datosCargados: boolean = false;
+let estadoRestaurado: boolean = false;
+let scrollPendiente: number | null = null;
+let saliendoAFicha: boolean = false;
 let avisoExito: HTMLDivElement | null = null;
 let avisoTemporizador: ReturnType<typeof setTimeout> | null = null;
+
+function leerFavoritos(): string[] {
+  try {
+    const crudo = localStorage.getItem(CLAVE_FAVORITOS);
+    const parsed: unknown = crudo ? JSON.parse(crudo) : [];
+    return Array.isArray(parsed) ? parsed.map(String) : [];
+  } catch {
+    return [];
+  }
+}
+
+function guardarFavoritos(ids: string[]): void {
+  try {
+    localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(ids));
+  } catch {
+  }
+}
+
+function esFavorito(id: string): boolean {
+  return leerFavoritos().includes(String(id));
+}
+
+function pintarBoton(boton: HTMLButtonElement, activo: boolean): void {
+  boton.classList.toggle("btn-fav--activo", activo);
+  boton.setAttribute("aria-pressed", String(activo));
+  boton.setAttribute(
+    "aria-label",
+    activo ? "Quitar de favoritos" : "Agregar a favoritos"
+  );
+  boton.textContent = activo ? "♥" : "♡";
+}
+
+function toggleFavorito(id: string): void {
+  const idStr = String(id);
+  const actuales = leerFavoritos();
+  const existe = actuales.includes(idStr);
+  const siguientes = existe
+    ? actuales.filter((item) => item !== idStr)
+    : [...actuales, idStr];
+
+  guardarFavoritos(siguientes);
+
+  const activo = !existe;
+  document
+    .querySelectorAll<HTMLButtonElement>(`.btn-fav[data-id="${CSS.escape(idStr)}"]`)
+    .forEach((btn) => pintarBoton(btn, activo));
+
+  if (filtrosActivos.soloFavoritos) {
+    aplicarFiltros(paginaActual);
+  }
+}
+
+function guardarEstado(): void {
+  if (!datosCargados) return;
+  try {
+    const estadoActual: EstadoGuardado = {
+      version: VERSION_ESTADO,
+      filtros: { ...filtrosActivos },
+      pagina: paginaActual,
+      scrollY: Math.round(window.scrollY),
+      desdeFicha: saliendoAFicha
+    };
+    sessionStorage.setItem(CLAVE_ESTADO, JSON.stringify(estadoActual));
+  } catch {
+  }
+}
+
+function leerEstadoGuardado(): EstadoGuardado | null {
+  try {
+    const crudo = sessionStorage.getItem(CLAVE_ESTADO);
+    if (!crudo) return null;
+    const guardado: unknown = JSON.parse(crudo);
+    if (!guardado || typeof guardado !== "object") return null;
+
+    const candidato = guardado as Partial<EstadoGuardado>;
+    if (
+      candidato.version !== VERSION_ESTADO ||
+      !candidato.filtros ||
+      typeof candidato.filtros !== "object"
+    ) {
+      return null;
+    }
+    return candidato as EstadoGuardado;
+  } catch {
+    return null;
+  }
+}
+
+function restaurarFiltrosGuardados(guardado: EstadoGuardado): void {
+  for (const clave of CLAVES_FILTRO) {
+    const select = selectores[clave];
+    const valor: unknown = guardado.filtros[clave];
+    if (!select || typeof valor !== "string") continue;
+
+    const existe = Array.from(select.options).some((op) => op.value === valor);
+    if (existe) {
+      select.value = valor;
+      filtrosActivos[clave] = valor;
+    }
+  }
+
+  if (typeof guardado.filtros.soloFavoritos === "boolean") {
+    filtrosActivos.soloFavoritos = guardado.filtros.soloFavoritos;
+    if (chkSoloFavoritos) {
+      chkSoloFavoritos.checked = guardado.filtros.soloFavoritos;
+    }
+  }
+}
+
+function volvioPorHistorial(): boolean {
+  const entradas = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
+  return entradas.length > 0 && entradas[0].type === "back_forward";
+}
+
+function aplicarScrollPendiente(): void {
+  if (scrollPendiente === null) return;
+  const y = scrollPendiente;
+  scrollPendiente = null;
+  requestAnimationFrame(() => window.scrollTo({ top: y, behavior: "auto" }));
+}
+
+function textoFiltro(clave: ClaveFiltroSelect, valor: string): string {
+  if (clave === "categoria") return `Categoría: ${valor}`;
+  if (clave === "sector") return `Sector: ${valor}`;
+  return `Calificación: ${valor} o más`;
+}
+
+function restablecerFiltro(clave: ClaveFiltroSelect): void {
+  filtrosActivos[clave] = FILTROS_POR_DEFECTO[clave];
+  const select = selectores[clave];
+  if (select) select.value = FILTROS_POR_DEFECTO[clave];
+}
+
+function limpiarFiltros(): void {
+  for (const clave of CLAVES_FILTRO) {
+    restablecerFiltro(clave);
+  }
+  filtrosActivos.soloFavoritos = false;
+  if (chkSoloFavoritos) chkSoloFavoritos.checked = false;
+  aplicarFiltros();
+}
+
+function actualizarFiltrosActivos(): void {
+  const activos = CLAVES_FILTRO.filter(
+    (clave) => filtrosActivos[clave] !== FILTROS_POR_DEFECTO[clave]
+  );
+  const totalActivos = activos.length + (filtrosActivos.soloFavoritos ? 1 : 0);
+
+  for (const clave of CLAVES_FILTRO) {
+    selectores[clave]?.classList.toggle("filtro--activo", activos.includes(clave));
+  }
+
+  if (!contenedorFiltros) return;
+
+  const total = lugaresFiltrados.length;
+  const textoLugares = total === 1 ? "1 lugar" : `${total} lugares`;
+  const textoFiltros =
+    totalActivos === 0
+      ? "Sin filtros activos"
+      : totalActivos === 1
+        ? "1 filtro activo"
+        : `${totalActivos} filtros activos`;
+
+  const resumen = document.createElement("p");
+  resumen.className = "filtros-activos__resumen";
+  resumen.textContent = `${textoFiltros} · ${textoLugares}`;
+  contenedorFiltros.replaceChildren(resumen);
+
+  if (totalActivos === 0) return;
+
+  const lista = document.createElement("ul");
+  lista.className = "filtros-activos__lista";
+
+  for (const clave of activos) {
+    const etiqueta = textoFiltro(clave, filtrosActivos[clave]);
+
+    const item = document.createElement("li");
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "filtros-activos__chip";
+    chip.textContent = `${etiqueta} ✕`;
+    chip.setAttribute("aria-label", `Quitar filtro ${etiqueta}`);
+    chip.addEventListener("click", () => {
+      restablecerFiltro(clave);
+      aplicarFiltros();
+      selectores[clave]?.focus();
+    });
+
+    item.appendChild(chip);
+    lista.appendChild(item);
+  }
+
+  if (filtrosActivos.soloFavoritos) {
+    const item = document.createElement("li");
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "filtros-activos__chip";
+    chip.textContent = "Solo favoritos ✕";
+    chip.setAttribute("aria-label", "Quitar filtro Solo favoritos");
+    chip.addEventListener("click", () => {
+      filtrosActivos.soloFavoritos = false;
+      if (chkSoloFavoritos) chkSoloFavoritos.checked = false;
+      aplicarFiltros();
+      chkSoloFavoritos?.focus();
+    });
+
+    item.appendChild(chip);
+    lista.appendChild(item);
+  }
+
+  const limpiar = document.createElement("button");
+  limpiar.type = "button";
+  limpiar.className = "filtros-activos__limpiar";
+  limpiar.textContent = "Limpiar filtros";
+  limpiar.addEventListener("click", limpiarFiltros);
+
+  contenedorFiltros.append(lista, limpiar);
+}
 
 async function pedirJSON(url: string): Promise<Response> {
   const controlador = new AbortController();
@@ -89,7 +339,7 @@ function normalizarLugar(crudo: unknown): Lugar | null {
   const imagen = texto(raw.image);
 
   return {
-    id: raw.id ?? "",
+    id: raw.id !== undefined && raw.id !== null ? String(raw.id) : "",
     nombre,
     descripcion: texto(raw.description),
     direccion: texto(raw.address),
@@ -103,7 +353,7 @@ function normalizarLugar(crudo: unknown): Lugar | null {
   };
 }
 
-function aplicarFiltros(): void {
+function aplicarFiltros(paginaDeseada: number = 1): void {
   let resultado: Lugar[] = [...todosLosLugares];
 
   if (filtrosActivos.categoria !== "todas") {
@@ -146,11 +396,18 @@ function aplicarFiltros(): void {
     );
   }
 
+  if (filtrosActivos.soloFavoritos) {
+    const favs = leerFavoritos();
+    resultado = resultado.filter((lugar) => favs.includes(lugar.id));
+  }
+
   lugaresFiltrados = resultado;
-  paginaActual = 1;
   totalPaginas = Math.max(1, Math.ceil(lugaresFiltrados.length / LIMITE));
+  paginaActual = Math.min(Math.max(1, paginaDeseada), totalPaginas);
 
   mostrarPaginaActual();
+  actualizarFiltrosActivos();
+  guardarEstado();
 }
 
 function mostrarPaginaActual(): void {
@@ -233,6 +490,16 @@ function crearTarjeta(lugar: Lugar): HTMLDivElement {
   contenedorTxt.appendChild(verMas);
 
   tarjeta.append(contenedorImg, contenedorTxt);
+
+  if (lugar.id) {
+    const btnFav = document.createElement("button");
+    btnFav.type = "button";
+    btnFav.className = "btn-fav";
+    btnFav.dataset.id = lugar.id;
+    pintarBoton(btnFav, esFavorito(lugar.id));
+    tarjeta.appendChild(btnFav);
+  }
+
   return tarjeta;
 }
 
@@ -330,7 +597,7 @@ function mostrarError(mensajeError: string, reintento: () => void): void {
   grid.hidden = true;
   grid.replaceChildren();
   estado.hidden = false;
-  estado.className = "catalogo-error";
+  estado.className = "catalogo-estado catalogo-estado--error";
   estado.setAttribute("role", "alert");
   estado.replaceChildren();
 
@@ -367,7 +634,14 @@ function mostrarVacio(): void {
 
   const mensaje = document.createElement("p");
   mensaje.textContent = "No se encontraron lugares con los filtros seleccionados.";
-  estado.append(mensaje);
+
+  const limpiar = document.createElement("button");
+  limpiar.type = "button";
+  limpiar.className = "catalogo-reintentar";
+  limpiar.textContent = "Limpiar filtros";
+  limpiar.addEventListener("click", limpiarFiltros);
+
+  estado.append(mensaje, limpiar);
 }
 
 function mostrarExito(lugares: Lugar[]): void {
@@ -397,6 +671,7 @@ function cambiarPagina(nuevaPagina: number): void {
         : "smooth",
     });
     mostrarPaginaActual();
+    guardarEstado();
   }
 }
 
@@ -413,38 +688,75 @@ async function cargarCatalogo(): Promise<void> {
 
     todosLosLugares = datos.map(normalizarLugar).filter((l): l is Lugar => l !== null);
 
-    aplicarFiltros();
+    let paginaInicial = 1;
+    if (!estadoRestaurado) {
+      estadoRestaurado = true;
+      const guardado = leerEstadoGuardado();
+      if (guardado) {
+        restaurarFiltrosGuardados(guardado);
+        paginaInicial = Number.isInteger(guardado.pagina) ? guardado.pagina : 1;
+        const volvio = guardado.desdeFicha === true || volvioPorHistorial();
+        if (volvio && Number.isFinite(guardado.scrollY)) {
+          scrollPendiente = guardado.scrollY;
+        }
+      }
+    }
+
+    datosCargados = true;
+    aplicarFiltros(paginaInicial);
+    aplicarScrollPendiente();
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Error desconocido";
     mostrarError(msg, cargarCatalogo);
   }
 }
 
-if (selectorCategoria) {
-  selectorCategoria.addEventListener("change", (e: Event) => {
+for (const clave of CLAVES_FILTRO) {
+  const select = selectores[clave];
+  if (!select) continue;
+  select.addEventListener("change", (e: Event) => {
     const target = e.target as HTMLSelectElement;
-    filtrosActivos.categoria = target.value;
+    filtrosActivos[clave] = target.value;
     aplicarFiltros();
   });
 }
 
-if (selectorSector) {
-  selectorSector.addEventListener("change", (e: Event) => {
-    const target = e.target as HTMLSelectElement;
-    filtrosActivos.sector = target.value;
-    aplicarFiltros();
-  });
-}
+chkSoloFavoritos?.addEventListener("change", () => {
+  filtrosActivos.soloFavoritos = chkSoloFavoritos.checked;
+  aplicarFiltros();
+});
 
-if (selectorCalificacion) {
-  selectorCalificacion.addEventListener("change", (e: Event) => {
-    const target = e.target as HTMLSelectElement;
-    filtrosActivos.calificacion = target.value;
-    aplicarFiltros();
-  });
-}
+grid?.addEventListener("click", (e: MouseEvent) => {
+  const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(".btn-fav");
+  if (btn?.dataset.id) {
+    toggleFavorito(btn.dataset.id);
+    return;
+  }
+
+  const enlace = (e.target as HTMLElement).closest(".boton__vermas");
+  if (!enlace) return;
+  saliendoAFicha = true;
+  guardarEstado();
+});
 
 btnAnterior?.addEventListener("click", () => cambiarPagina(paginaActual - 1));
 btnSiguiente?.addEventListener("click", () => cambiarPagina(paginaActual + 1));
+
+window.addEventListener("pagehide", guardarEstado);
+
+function marcarRegreso(): void {
+  saliendoAFicha = false;
+  guardarEstado();
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") marcarRegreso();
+});
+window.addEventListener("pageshow", (e: PageTransitionEvent) => {
+  if (e.persisted) marcarRegreso();
+});
+
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
 
 cargarCatalogo();
