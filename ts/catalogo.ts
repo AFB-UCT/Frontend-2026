@@ -33,6 +33,7 @@ interface FiltrosActivos {
   categoria: string;
   sector: string;
   calificacion: string;
+  soloFavoritos: boolean;
 }
 
 type ClaveFiltro = keyof FiltrosActivos;
@@ -64,6 +65,8 @@ const estado = document.getElementById("catalogo-estado") as HTMLElement | null;
 const btnAnterior = document.getElementById("pagina-anterior") as HTMLButtonElement | null;
 const btnSiguiente = document.getElementById("pagina-siguiente") as HTMLButtonElement | null;
 const indicador = document.getElementById("pagina-indicador") as HTMLElement | null;
+const chkSoloFavoritos = document.getElementById("filtro-favoritos") as HTMLInputElement | null;
+const contador = document.getElementById("catalogo-contador") as HTMLElement | null;
 const selectorCategoria = document.getElementById("filtro-categoria") as HTMLSelectElement | null;
 const selectorSector = document.getElementById("filtro-sector") as HTMLSelectElement | null;
 const selectorCalificacion = document.getElementById("filtro-calificacion") as HTMLSelectElement | null;
@@ -313,6 +316,11 @@ function aplicarFiltros(paginaDeseada: number = 1): void {
     );
   }
 
+  if (filtrosActivos.soloFavoritos) {
+    const favs = leerFavoritos();
+    resultado = resultado.filter((lugar) => favs.includes(lugar.id));
+  }
+
   lugaresFiltrados = resultado;
   totalPaginas = Math.max(1, Math.ceil(lugaresFiltrados.length / LIMITE));
   paginaActual = Math.min(Math.max(1, paginaDeseada), totalPaginas);
@@ -402,6 +410,17 @@ function crearTarjeta(lugar: Lugar): HTMLDivElement {
   contenedorTxt.appendChild(verMas);
 
   tarjeta.append(contenedorImg, contenedorTxt);
+
+  if (lugar.id) {
+    const btnFav = document.createElement("button");
+    btnFav.type = "button";
+    btnFav.className = "btn-fav";
+    btnFav.dataset.id = lugar.id;
+    pintarBoton(btnFav, false);
+    tarjeta.appendChild(btnFav);
+    pintarBoton(btnFav, esFavorito(lugar.id));
+  }
+
   return tarjeta;
 }
 
@@ -622,6 +641,17 @@ for (const clave of CLAVES_FILTRO) {
     aplicarFiltros();
   });
 }
+
+chkSoloFavoritos?.addEventListener("change", () => {
+  filtrosActivos.soloFavoritos = chkSoloFavoritos.checked;
+  aplicarFiltros();
+});
+
+// Delegación: sigue funcionando aunque se re-rendericen las tarjetas
+grid?.addEventListener("click", (e: MouseEvent) => {
+  const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(".btn-fav");
+  if (btn?.dataset.id) toggleFavorito(btn.dataset.id);
+});
 
 btnAnterior?.addEventListener("click", () => cambiarPagina(paginaActual - 1));
 btnSiguiente?.addEventListener("click", () => cambiarPagina(paginaActual + 1));

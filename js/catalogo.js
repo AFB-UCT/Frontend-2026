@@ -16,6 +16,8 @@ const estado = document.getElementById("catalogo-estado");
 const btnAnterior = document.getElementById("pagina-anterior");
 const btnSiguiente = document.getElementById("pagina-siguiente");
 const indicador = document.getElementById("pagina-indicador");
+const chkSoloFavoritos = document.getElementById("filtro-favoritos");
+const contador = document.getElementById("catalogo-contador");
 const selectorCategoria = document.getElementById("filtro-categoria");
 const selectorSector = document.getElementById("filtro-sector");
 const selectorCalificacion = document.getElementById("filtro-calificacion");
@@ -183,44 +185,43 @@ function actualizarFiltrosActivos() {
 }
 
 async function pedirJSON(url) {
-  const controlador = new AbortController();
-  const reloj = setTimeout(() => controlador.abort(), TIEMPO_MAXIMO_MS);
-
-  try {
-    return await fetch(url, { signal: controlador.signal });
-  } catch (error) {
-    if (error.name === "AbortError") {
-      throw new Error("El servidor tardó demasiado en responder.");
+    const controlador = new AbortController();
+    const reloj = setTimeout(() => controlador.abort(), TIEMPO_MAXIMO_MS);
+    try {
+        return await fetch(url, { signal: controlador.signal });
     }
-    throw new Error("Revisa tu conexión a internet e inténtalo de nuevo.");
-  } finally {
-    clearTimeout(reloj);
-  }
+    catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+            throw new Error("El servidor tardó demasiado en responder.");
+        }
+        throw new Error("Revisa tu conexión a internet e inténtalo de nuevo.");
+    }
+    finally {
+        clearTimeout(reloj);
+    }
 }
-
 function texto(valor) {
-  return typeof valor === "string" ? valor.trim() : "";
+    return typeof valor === "string" ? valor.trim() : "";
 }
-
 function normalizarLugar(crudo) {
-  if (!crudo || typeof crudo !== "object") return null;
-
-  const nombre = texto(crudo.name) || "Lugar sin nombre";
-  const imagen = texto(crudo.image);
-
-  return {
-    id: crudo.id ?? "",
-    nombre,
-    descripcion: texto(crudo.description),
-    direccion: texto(crudo.address),
-    telefono: texto(crudo.phone),
-    correo: texto(crudo.email),
-    sector: texto(crudo.sector) || "Temuco",
-    categoria: texto(crudo.categoria) || "Lugar natural",
-    calificacion: crudo.calificacion ? Number(crudo.calificacion) : null,
-    googleMapsUrl: texto(crudo.googleMapsUrl),
-    imagen: /^(https?:\/\/|\.{0,2}\/)/i.test(imagen) ? imagen : IMAGEN_RESPALDO,
-  };
+    if (!crudo || typeof crudo !== "object")
+        return null;
+    const raw = crudo;
+    const nombre = texto(raw.name) || "Lugar sin nombre";
+    const imagen = texto(raw.image);
+    return {
+        id: raw.id ?? "",
+        nombre,
+        descripcion: texto(raw.description),
+        direccion: texto(raw.address),
+        telefono: texto(raw.phone),
+        correo: texto(raw.email),
+        sector: texto(raw.sector) || "Temuco",
+        categoria: texto(raw.categoria) || "Lugar natural",
+        calificacion: raw.calificacion ? Number(raw.calificacion) : null,
+        googleMapsUrl: texto(raw.googleMapsUrl),
+        imagen: /^(https?:\/\/|\.{0,2}\/)/i.test(imagen) ? imagen : IMAGEN_RESPALDO,
+    };
 }
 
 function aplicarFiltros(paginaDeseada = 1) {
@@ -262,207 +263,184 @@ function aplicarFiltros(paginaDeseada = 1) {
   actualizarFiltrosActivos();
   guardarEstado();
 }
-
 function mostrarPaginaActual() {
-  if (lugaresFiltrados.length === 0) {
-    mostrarVacio();
+    if (lugaresFiltrados.length === 0) {
+        mostrarVacio();
+        actualizarPaginacion();
+        return;
+    }
+    const inicio = (paginaActual - 1) * LIMITE;
+    const fin = inicio + LIMITE;
+    const lugaresDeLaPagina = lugaresFiltrados.slice(inicio, fin);
+    mostrarExito(lugaresDeLaPagina);
     actualizarPaginacion();
-    return;
-  }
-
-  const inicio = (paginaActual - 1) * LIMITE;
-  const fin = inicio + LIMITE;
-  const lugaresDeLaPagina = lugaresFiltrados.slice(inicio, fin);
-
-  mostrarExito(lugaresDeLaPagina);
-  actualizarPaginacion();
 }
-
 function crearLinea(clase, contenido) {
-  const p = document.createElement("p");
-  p.className = clase;
-  p.textContent = contenido;
-  return p;
+    const p = document.createElement("p");
+    p.className = clase;
+    p.textContent = contenido;
+    return p;
 }
-
 function crearTarjeta(lugar) {
-  const tarjeta = document.createElement("div");
-  tarjeta.className = "tarjeta";
-  tarjeta.dataset.id = lugar.id;
-
-  const contenedorImg = document.createElement("div");
-  contenedorImg.className = "tarjeta__img";
-
-  const img = document.createElement("img");
-  img.src = lugar.imagen;
-  img.alt = `Imagen de ${lugar.nombre}`;
-  img.loading = "lazy";
-  img.addEventListener(
-    "error",
-    () => {
-      img.src = IMAGEN_RESPALDO;
-    },
-    { once: true }
-  );
-  contenedorImg.appendChild(img);
-
-  const contenedorTxt = document.createElement("div");
-  contenedorTxt.className = "tarjeta__texto";
-
-  const titulo = document.createElement("h3");
-  titulo.textContent = lugar.nombre;
-  contenedorTxt.appendChild(titulo);
-
-  if (lugar.calificacion) {
-    const califTexto = document.createElement("p");
-    califTexto.className = "tarjeta__calificacion";
-    califTexto.innerHTML = `⭐ <strong>${lugar.calificacion}</strong> <span class="tarjeta__fuente">(Google Maps)</span>`;
-    contenedorTxt.appendChild(califTexto);
-  }
-
-  if (lugar.direccion) {
-    contenedorTxt.appendChild(crearLinea("tarjeta__direccion", `📍 ${lugar.direccion}`));
-  }
-  if (lugar.descripcion) {
-    contenedorTxt.appendChild(crearLinea("tarjeta__descripcion", lugar.descripcion));
-  }
-  if (lugar.telefono) {
-    contenedorTxt.appendChild(crearLinea("tarjeta__contacto", `Tel: ${lugar.telefono}`));
-  }
-  if (lugar.correo) {
-    contenedorTxt.appendChild(crearLinea("tarjeta__contacto", lugar.correo));
-  }
-
-  const verMas = document.createElement("a");
-  verMas.href = lugar.googleMapsUrl || "#";
-  if (lugar.googleMapsUrl) verMas.target = "_blank";
-  verMas.className = "boton__vermas";
-  verMas.textContent = "Ver mas";
-  verMas.dataset.id = lugar.id;
-  verMas.setAttribute("aria-label", `Ver más detalles sobre ${lugar.nombre}`);
-  contenedorTxt.appendChild(verMas);
-
-  tarjeta.append(contenedorImg, contenedorTxt);
-  return tarjeta;
+    const tarjeta = document.createElement("div");
+    tarjeta.className = "tarjeta";
+    tarjeta.dataset.id = lugar.id;
+    const contenedorImg = document.createElement("div");
+    contenedorImg.className = "tarjeta__img";
+    const img = document.createElement("img");
+    img.src = lugar.imagen;
+    img.alt = `Imagen de ${lugar.nombre}`;
+    img.loading = "lazy";
+    img.addEventListener("error", () => {
+        img.src = IMAGEN_RESPALDO;
+    }, { once: true });
+    contenedorImg.appendChild(img);
+    const contenedorTxt = document.createElement("div");
+    contenedorTxt.className = "tarjeta__texto";
+    const titulo = document.createElement("h3");
+    titulo.textContent = lugar.nombre;
+    contenedorTxt.appendChild(titulo);
+    if (lugar.calificacion) {
+        const califTexto = document.createElement("p");
+        califTexto.className = "tarjeta__calificacion";
+        califTexto.innerHTML = `⭐ <strong>${lugar.calificacion}</strong> <span class="tarjeta__fuente">(Google Maps)</span>`;
+        contenedorTxt.appendChild(califTexto);
+    }
+    if (lugar.direccion) {
+        contenedorTxt.appendChild(crearLinea("tarjeta__direccion", `📍 ${lugar.direccion}`));
+    }
+    if (lugar.descripcion) {
+        contenedorTxt.appendChild(crearLinea("tarjeta__descripcion", lugar.descripcion));
+    }
+    if (lugar.telefono) {
+        contenedorTxt.appendChild(crearLinea("tarjeta__contacto", `Tel: ${lugar.telefono}`));
+    }
+    if (lugar.correo) {
+        contenedorTxt.appendChild(crearLinea("tarjeta__contacto", lugar.correo));
+    }
+    const verMas = document.createElement("a");
+    verMas.href = lugar.googleMapsUrl || "#";
+    if (lugar.googleMapsUrl)
+        verMas.target = "_blank";
+    verMas.className = "boton__vermas";
+    verMas.textContent = "Ver mas";
+    verMas.dataset.id = lugar.id;
+    verMas.setAttribute("aria-label", `Ver más detalles sobre ${lugar.nombre}`);
+    contenedorTxt.appendChild(verMas);
+    tarjeta.append(contenedorImg, contenedorTxt);
+    if (lugar.id) {
+        const btnFav = document.createElement("button");
+        btnFav.type = "button";
+        btnFav.className = "btn-fav";
+        btnFav.dataset.id = lugar.id;
+        pintarBoton(btnFav, false);
+        tarjeta.appendChild(btnFav);
+        pintarBoton(btnFav, esFavorito(lugar.id));
+    }
+    return tarjeta;
 }
-
 function renderizarTarjetas(lugares) {
-  const fragmento = document.createDocumentFragment();
-  for (const lugar of lugares) {
-    fragmento.appendChild(crearTarjeta(lugar));
-  }
-  grid.replaceChildren(fragmento);
+    if (!grid)
+        return;
+    const fragmento = document.createDocumentFragment();
+    for (const lugar of lugares) {
+        fragmento.appendChild(crearTarjeta(lugar));
+    }
+    grid.replaceChildren(fragmento);
 }
-
 function crearLineaSkeleton(variante) {
-  const linea = document.createElement("span");
-  linea.className = variante
-    ? `skeleton-linea skeleton-linea--${variante}`
-    : "skeleton-linea";
-  return linea;
+    const linea = document.createElement("span");
+    linea.className = variante
+        ? `skeleton-linea skeleton-linea--${variante}`
+        : "skeleton-linea";
+    return linea;
 }
-
 function crearTarjetaSkeleton() {
-  const tarjeta = document.createElement("div");
-  tarjeta.className = "tarjeta tarjeta--skeleton";
-  tarjeta.setAttribute("aria-hidden", "true");
-
-  const contenedorImg = document.createElement("div");
-  contenedorImg.className = "tarjeta__img";
-
-  const bloqueImg = document.createElement("div");
-  bloqueImg.className = "skeleton-img";
-  contenedorImg.appendChild(bloqueImg);
-
-  const contenedorTxt = document.createElement("div");
-  contenedorTxt.className = "tarjeta__texto";
-
-  const titulo = document.createElement("h3");
-  titulo.appendChild(crearLineaSkeleton("titulo"));
-  contenedorTxt.appendChild(titulo);
-
-  contenedorTxt.appendChild(crearLineaSkeleton("corta"));
-  contenedorTxt.appendChild(crearLineaSkeleton());
-  contenedorTxt.appendChild(crearLineaSkeleton());
-  contenedorTxt.appendChild(crearLineaSkeleton("media"));
-
-  const boton = document.createElement("span");
-  boton.className = "skeleton-boton";
-  contenedorTxt.appendChild(boton);
-
-  tarjeta.append(contenedorImg, contenedorTxt);
-  return tarjeta;
+    const tarjeta = document.createElement("div");
+    tarjeta.className = "tarjeta tarjeta--skeleton";
+    tarjeta.setAttribute("aria-hidden", "true");
+    const contenedorImg = document.createElement("div");
+    contenedorImg.className = "tarjeta__img";
+    const bloqueImg = document.createElement("div");
+    bloqueImg.className = "skeleton-img";
+    contenedorImg.appendChild(bloqueImg);
+    const contenedorTxt = document.createElement("div");
+    contenedorTxt.className = "tarjeta__texto";
+    const titulo = document.createElement("h3");
+    titulo.appendChild(crearLineaSkeleton("titulo"));
+    contenedorTxt.appendChild(titulo);
+    contenedorTxt.appendChild(crearLineaSkeleton("corta"));
+    contenedorTxt.appendChild(crearLineaSkeleton());
+    contenedorTxt.appendChild(crearLineaSkeleton());
+    contenedorTxt.appendChild(crearLineaSkeleton("media"));
+    const boton = document.createElement("span");
+    boton.className = "skeleton-boton";
+    contenedorTxt.appendChild(boton);
+    tarjeta.append(contenedorImg, contenedorTxt);
+    return tarjeta;
 }
-
 function mostrarCargando() {
-  estado.hidden = false;
-  estado.className = "catalogo-estado catalogo-estado--cargando";
-  estado.setAttribute("role", "status");
-  estado.replaceChildren();
-
-  const spinner = document.createElement("span");
-  spinner.className = "catalogo-spinner";
-  spinner.setAttribute("aria-hidden", "true");
-
-  const mensaje = document.createElement("p");
-  mensaje.textContent = "Cargando lugares...";
-
-  estado.append(spinner, mensaje);
-
-  const fragmento = document.createDocumentFragment();
-  for (let i = 0; i < LIMITE; i += 1) {
-    fragmento.appendChild(crearTarjetaSkeleton());
-  }
-  grid.hidden = false;
-  grid.replaceChildren(fragmento);
+    if (!estado || !grid)
+        return;
+    estado.hidden = false;
+    estado.className = "catalogo-estado catalogo-estado--cargando";
+    estado.setAttribute("role", "status");
+    estado.replaceChildren();
+    const spinner = document.createElement("span");
+    spinner.className = "catalogo-spinner";
+    spinner.setAttribute("aria-hidden", "true");
+    const mensaje = document.createElement("p");
+    mensaje.textContent = "Cargando lugares...";
+    estado.append(spinner, mensaje);
+    const fragmento = document.createDocumentFragment();
+    for (let i = 0; i < LIMITE; i += 1) {
+        fragmento.appendChild(crearTarjetaSkeleton());
+    }
+    grid.hidden = false;
+    grid.replaceChildren(fragmento);
 }
-
 function mostrarAvisoExito(mensaje) {
-  if (!avisoExito) {
-    avisoExito = document.createElement("div");
-    avisoExito.className = "catalogo-toast";
-    avisoExito.setAttribute("role", "status");
-    avisoExito.setAttribute("aria-live", "polite");
-    document.body.appendChild(avisoExito);
-  }
-  clearTimeout(avisoTemporizador);
-  avisoExito.textContent = mensaje;
-  avisoExito.classList.add("catalogo-toast--visible");
-  avisoTemporizador = setTimeout(() => {
-    avisoExito.classList.remove("catalogo-toast--visible");
-  }, 2500);
+    if (!avisoExito) {
+        avisoExito = document.createElement("div");
+        avisoExito.className = "catalogo-toast";
+        avisoExito.setAttribute("role", "status");
+        avisoExito.setAttribute("aria-live", "polite");
+        document.body.appendChild(avisoExito);
+    }
+    if (avisoTemporizador)
+        clearTimeout(avisoTemporizador);
+    avisoExito.textContent = mensaje;
+    avisoExito.classList.add("catalogo-toast--visible");
+    avisoTemporizador = setTimeout(() => {
+        avisoExito?.classList.remove("catalogo-toast--visible");
+    }, 2500);
 }
-
 function mostrarError(mensajeError, reintento) {
-  grid.hidden = true;
-  grid.replaceChildren();
-  estado.hidden = false;
-  estado.className = "catalogo-error";
-  estado.setAttribute("role", "alert");
-  estado.replaceChildren();
-
-  const icono = document.createElement("span");
-  icono.className = "catalogo-error-icono";
-  icono.setAttribute("aria-hidden", "true");
-  icono.innerHTML = ICONO_ERROR;
-
-  const titulo = document.createElement("h3");
-  titulo.className = "catalogo-error-titulo";
-  titulo.textContent = "No pudimos cargar los lugares";
-
-  const detalle = document.createElement("p");
-  detalle.className = "catalogo-error-detalle";
-  detalle.textContent = mensajeError;
-
-  const boton = document.createElement("button");
-  boton.type = "button";
-  boton.className = "catalogo-reintentar";
-  boton.textContent = "Reintentar";
-  boton.addEventListener("click", reintento);
-
-  estado.append(icono, titulo, detalle, boton);
+    if (!grid || !estado)
+        return;
+    grid.hidden = true;
+    grid.replaceChildren();
+    estado.hidden = false;
+    estado.className = "catalogo-error";
+    estado.setAttribute("role", "alert");
+    estado.replaceChildren();
+    const icono = document.createElement("span");
+    icono.className = "catalogo-error-icono";
+    icono.setAttribute("aria-hidden", "true");
+    icono.innerHTML = ICONO_ERROR;
+    const titulo = document.createElement("h3");
+    titulo.className = "catalogo-error-titulo";
+    titulo.textContent = "No pudimos cargar los lugares";
+    const detalle = document.createElement("p");
+    detalle.className = "catalogo-error-detalle";
+    detalle.textContent = mensajeError;
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.className = "catalogo-reintentar";
+    boton.textContent = "Reintentar";
+    boton.addEventListener("click", reintento);
+    estado.append(icono, titulo, detalle, boton);
 }
-
 function mostrarVacio() {
   grid.hidden = true;
   grid.replaceChildren();
@@ -482,22 +460,24 @@ function mostrarVacio() {
 
   estado.append(mensaje, limpiar);
 }
-
 function mostrarExito(lugares) {
-  estado.hidden = true;
-  estado.replaceChildren();
-  grid.hidden = false;
-  renderizarTarjetas(lugares);
-  mostrarAvisoExito("✓ Lugares cargados correctamente");
+    if (!estado || !grid)
+        return;
+    estado.hidden = true;
+    estado.replaceChildren();
+    grid.hidden = false;
+    renderizarTarjetas(lugares);
+    mostrarAvisoExito("✓ Lugares cargados correctamente");
 }
-
 function actualizarPaginacion() {
-  btnAnterior.disabled = paginaActual <= 1;
-  btnSiguiente.disabled = paginaActual >= totalPaginas;
-
-  indicador.textContent = `Pagina ${paginaActual} de ${totalPaginas}`;
+    if (btnAnterior)
+        btnAnterior.disabled = paginaActual <= 1;
+    if (btnSiguiente)
+        btnSiguiente.disabled = paginaActual >= totalPaginas;
+    if (indicador) {
+        indicador.textContent = `Pagina ${paginaActual} de ${totalPaginas}`;
+    }
 }
-
 function cambiarPagina(nuevaPagina) {
   if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
     paginaActual = nuevaPagina;
@@ -510,7 +490,6 @@ function cambiarPagina(nuevaPagina) {
     guardarEstado();
   }
 }
-
 async function cargarCatalogo() {
   mostrarCargando();
   try {
